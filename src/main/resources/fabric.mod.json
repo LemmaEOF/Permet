@@ -1,33 +1,28 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "permet",
 	"version": "${version}",
-	"name": "Example mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Permet",
+	"description": "Relic weapons for ocat3-smp",
 	"authors": [
-		"Me!"
+		"LemmaEOF"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/LemmaEOF/Permet"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/permet/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"gay.lemmaeof.permet.Permet"
 		],
 		"client": [
-			"com.example.ExampleModClient"
+			"gay.lemmaeof.permet.client.PermetClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
-		{
-			"config": "modid.client.mixins.json",
-			"environment": "client"
-		}
+		"mixins.permet.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.0",
