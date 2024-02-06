@@ -34,12 +34,9 @@ public class BigKnifeItem extends SwordItem {
 	@Override
 	public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
 		if (!user.getWorld().isClient() && !entity.getType().isIn(PermetTags.KNIFE_UNCARVEABLE)) {
-			System.out.println("Setting target as UUID " + entity.getUuid());
-			stack.getOrCreateNbt().putUuid("target", entity.getUuid());
 			user.setCurrentHand(hand);
-			System.out.println("Item stack on set: " + stack);
-			System.out.println("Item stack hash code on set: " + stack.hashCode());
-			System.out.println("Stack NBT on set: " + stack.getNbt().asString());
+			ItemStack activeStack = user.getActiveItem();
+			activeStack.getOrCreateNbt().putUuid("target", entity.getUuid());
 			return ActionResult.CONSUME_PARTIAL;
 		}
 		return super.useOnEntity(stack, user, entity, hand);
@@ -50,57 +47,42 @@ public class BigKnifeItem extends SwordItem {
 		return 60;
 	}
 
-//	@Override
-//	public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
-//		super.onStoppedUsing(stack, world, user, remainingUseTicks);
-//		System.out.println("Clearing UUID");
-//		if (!world.isClient()) stack.getOrCreateNbt().remove("target");
-//	}
+	@Override
+	public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+		super.onStoppedUsing(stack, world, user, remainingUseTicks);
+		if (!world.isClient()) stack.getOrCreateNbt().remove("target");
+	}
 
 	@Override
 	public UseAction getUseAction(ItemStack stack) {
 		return UseAction.BOW;
 	}
 
-//	@Override
-//	public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-//		super.usageTick(world, user, stack, remainingUseTicks);
-//		if (!world.isClient && remainingUseTicks % 5 == 4) {
-//			System.out.println("Remaining ticks: " + remainingUseTicks);
-//			EntityHitResult res = raycast(user, 5);
-//			if (res != null) {
-//				Entity target = res.getEntity();
-//				System.out.println("Current target entity is " + target.getUuid());
-//				if (stack.getOrCreateNbt().containsUuid("target")) System.out.println("Current stored UUID is " + stack.getOrCreateNbt().getUuid("target"));
-//				else System.out.println("No current stored UUID! What?");
-//				if (!stack.getOrCreateNbt().containsUuid("target") || !target.getUuid().equals(stack.getOrCreateNbt().getUuid("target"))) {
-//					System.out.println("UUIDs are different! Clearing!");
-//					user.clearActiveItem();
-//					stack.getOrCreateNbt().remove("target");
-//				}
-//			} else {
-//				System.out.println("No target entity found! Clearing!");
-//				user.clearActiveItem();
-//				stack.getOrCreateNbt().remove("target");
-//			}
-//		}
-//	}
+	@Override
+	public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+		super.usageTick(world, user, stack, remainingUseTicks);
+		if (!world.isClient && remainingUseTicks % 5 == 4) {
+			EntityHitResult res = raycast(user, 5);
+			if (res != null) {
+				Entity target = res.getEntity();
+				if (!stack.getOrCreateNbt().containsUuid("target") || !target.getUuid().equals(stack.getOrCreateNbt().getUuid("target"))) {
+					user.clearActiveItem();
+					stack.getOrCreateNbt().remove("target");
+				}
+			} else {
+				user.clearActiveItem();
+				stack.getOrCreateNbt().remove("target");
+			}
+		}
+	}
 
 	@Override
 	public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
 		if (!world.isClient() && user instanceof PlayerEntity player) {
-			System.out.println("No more remaining use ticks!");
-			System.out.println("Item stack on check: " + stack.toString());
-			System.out.println("Item stack hash code on check: " + stack.hashCode());
 			EntityHitResult res = raycast(user, 5);
 			if (res != null) {
-				System.out.println("Entity found!");
-				System.out.println("Stack NBT on check: " + stack.getOrCreateNbt().asString());
 				Entity target = res.getEntity();
-				System.out.println("Current target entity is " + target.getUuid());
-				System.out.println("Current stored UUID is " + stack.getOrCreateNbt().getUuid("target"));
 				if (target.getUuid().equals(stack.getOrCreateNbt().getUuid("target")) && target instanceof LivingEntity living) {
-					System.out.println("Found an entity! Carving!~");
 					DamageSource carve = world.getDamageSources().create(PermetDamageTypes.CARVE, player);
 					Identifier identifier = living.getLootTable();
 					LootTable lootTable = world.getServer().getLootManager().getLootTable(identifier);
@@ -114,11 +96,11 @@ public class BigKnifeItem extends SwordItem {
 
 					LootContextParameterSet lootContextParameterSet = builder.build(LootContextTypes.ENTITY);
 					lootTable.generateLoot(lootContextParameterSet, living.getLootTableSeed(), living::dropStack);
-					living.damage(carve, Math.max(living.getMaxHealth(), 10));
+					//TODO: carve sound
+					living.damage(carve, Math.min(living.getMaxHealth() / 2, 10));
 
 				}
 			}
-			System.out.println("Clearing NBT!");
 			stack.getOrCreateNbt().remove("target");
 		}
 		return super.finishUsing(stack, world, user);

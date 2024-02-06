@@ -1,4 +1,6 @@
 {
     "death.attack.permet.home_run": "%s was knocked out of the park",
-    "death.attack.permet.home_run.item": "%1$s was knocked out of the park by %2$s using %3$s"
+    "death.attack.permet.home_run.item": "%1$s was knocked out of the park by %2$s using %3$s",
+    "death.attack.permet.carve": "%s was carved to pieces",
+    "death.attack.permet.carve.item": "%1$s was carved to pieces by %2$s using %3$s"
 }
