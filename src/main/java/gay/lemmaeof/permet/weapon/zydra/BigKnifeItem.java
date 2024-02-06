@@ -33,7 +33,9 @@ public class BigKnifeItem extends SwordItem {
 
 	@Override
 	public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-		if (!user.getWorld().isClient() && !entity.getType().isIn(PermetTags.KNIFE_UNCARVEABLE)) {
+		if (!user.getWorld().isClient()
+				&& !entity.getType().isIn(PermetTags.KNIFE_UNCARVEABLE)
+				&& !entity.getCommandTags().contains("permet:carved")) {
 			user.setCurrentHand(hand);
 			ItemStack activeStack = user.getActiveItem();
 			activeStack.getOrCreateNbt().putUuid("target", entity.getUuid());
@@ -55,7 +57,7 @@ public class BigKnifeItem extends SwordItem {
 
 	@Override
 	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.BOW;
+		return UseAction.BRUSH;
 	}
 
 	@Override
@@ -97,6 +99,7 @@ public class BigKnifeItem extends SwordItem {
 					LootContextParameterSet lootContextParameterSet = builder.build(LootContextTypes.ENTITY);
 					lootTable.generateLoot(lootContextParameterSet, living.getLootTableSeed(), living::dropStack);
 					//TODO: carve sound
+					living.addCommandTag("permet:carved");
 					living.damage(carve, Math.min(living.getMaxHealth() / 2, 10));
 
 				}
