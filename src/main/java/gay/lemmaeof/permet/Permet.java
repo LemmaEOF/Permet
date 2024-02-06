@@ -1,5 +1,7 @@
 package gay.lemmaeof.permet;
 
+import gay.lemmaeof.permet.init.PermetDamageTypes;
+import gay.lemmaeof.permet.init.PermetItems;
 import gay.lemmaeof.permet.init.PermetTags;
 import net.fabricmc.api.ModInitializer;
 
@@ -12,6 +14,8 @@ public class Permet implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		PermetItems.init();
+		PermetDamageTypes.init();
 		PermetTags.init();
 	}
 }

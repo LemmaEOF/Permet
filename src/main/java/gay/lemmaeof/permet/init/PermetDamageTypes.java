@@ -7,7 +7,12 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 public class PermetDamageTypes {
-	public static final RegistryKey<DamageType> HOME_RUN = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(Permet.MODID, "home_run"));
+	public static final RegistryKey<DamageType> HOME_RUN = of("home_run");
+	public static final RegistryKey<DamageType> CARVE = of("carve");
 
 	public static void init() {}
+
+	private static RegistryKey<DamageType> of(String name) {
+		return RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier(Permet.MODID, name));
+	}
 }
