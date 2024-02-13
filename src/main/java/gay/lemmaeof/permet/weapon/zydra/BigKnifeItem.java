@@ -100,7 +100,7 @@ public class BigKnifeItem extends SwordItem {
 					lootTable.generateLoot(lootContextParameterSet, living.getLootTableSeed(), living::dropStack);
 					//TODO: carve sound
 					living.addCommandTag("permet:carved");
-					living.damage(carve, Math.min(living.getMaxHealth() / 2, 10));
+					living.damage(carve, Math.min(living.getHealth() / 2, 10));
 
 				}
 			}
