@@ -1,6 +1,9 @@
 package gay.lemmaeof.permet.init;
 
+import java.util.List;
+
 import gay.lemmaeof.permet.Permet;
+import gay.lemmaeof.permet.relics.Example;
 import gay.lemmaeof.permet.util.PermetToolMaterial;
 import gay.lemmaeof.permet.weapon.cardbox.OlReliableItem;
 import gay.lemmaeof.permet.weapon.star.MagitekBowItem;
@@ -27,6 +30,8 @@ public class PermetItems {
 	public static final Item OL_RELIABLE = register("ol_reliable", new OlReliableItem(PermetToolMaterial.PERMET, 3, -4, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 	public static final Item BIG_KNIFE = register("big_knife", new BigKnifeItem(PermetToolMaterial.PERMET, 3, -2.4f, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 
+	public static final List<Item> SWAGGER_WARNING = Example.test(PermetItems::register);
+
 	public static final ItemGroup PERMET_GROUP = Registry.register(Registries.ITEM_GROUP, new Identifier(Permet.MODID, "permet"),
 			FabricItemGroup.builder()
 					.displayName(Text.translatable("itemGroup.permet.permet"))
@@ -41,9 +46,15 @@ public class PermetItems {
 						entries.add(MAGITEK_BOW);
 						entries.add(OL_RELIABLE);
 						entries.add(BIG_KNIFE);
+
+						for (var EPIC_WIN_ITEM : SWAGGER_WARNING) {
+							entries.add(EPIC_WIN_ITEM);
+						}
 					}))
 					.build()
 	);
+
+	
 
 	public static void init() {}
 
