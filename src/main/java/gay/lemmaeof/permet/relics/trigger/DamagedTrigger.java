@@ -1,6 +1,7 @@
 package gay.lemmaeof.permet.relics.trigger;
 
 public class DamagedTrigger implements Trigger {
+	DamagedTrigger() {}
 
 	@Override
 	public boolean test(TriggerContext t) {

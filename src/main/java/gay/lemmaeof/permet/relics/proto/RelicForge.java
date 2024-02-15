@@ -2,11 +2,10 @@ package gay.lemmaeof.permet.relics.proto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import gay.lemmaeof.permet.relics.F;
 import gay.lemmaeof.permet.relics.effect.Effect;
+import gay.lemmaeof.permet.relics.magic.Forge;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterial;
@@ -14,7 +13,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 
-public class RelicForge {
+public final class RelicForge extends Forge<Relic, RelicForge> {
     // cooler name for RelicBuilder
     // accepts modifications, then builds a Relic Item
 
@@ -29,14 +28,10 @@ public class RelicForge {
     private ToolMaterial material = null; //new RelicToolMaterial(0, 0, 0, 0, 0, Ingredient::empty);
 
     private List<Effect> effects = new ArrayList<>();
-
     private Item.Settings settings;
 
-    public static Relic forge(Function<RelicForge, RelicForge> spell) {
-        return spell.apply(new RelicForge()).buildRelic();
-    }
-    
-    private Relic buildRelic(){
+    @Override
+    public Relic forge(){
         if (material == null) 
             material = new RelicToolMaterial(0, 0, 0, 0, 0, Ingredient::empty);
 
@@ -52,48 +47,46 @@ public class RelicForge {
             repairIngredient
         );
 
-        if (settings == null) settings = new Item.Settings();
-
-        return new Relic(attackSpeed, material, effectiveBlocks, settings);
+        return new Relic(attackSpeed, material, effectiveBlocks, settings == null ? new Item.Settings() : settings);
     };
 
-    public static Function<RelicForge, RelicForge> applyMaterial(ToolMaterial mat){
-        return F.set(r -> r.material = mat);
+    public RelicForge material(ToolMaterial mat){
+        material = mat; return this;
     }
 
-    public static Function<RelicForge, RelicForge> attackSpeed (float v){
-        return F.set(r -> r.attackSpeed = v);
+    public RelicForge attackSpeed (float v){
+        attackSpeed = v; return this;
     }
 
-    public static Function<RelicForge, RelicForge> attackDamage (float v){
-        return F.set(r -> r.attackDamage = v);
+    public RelicForge attackDamage (float v){
+        attackDamage = v; return this;
     }
 
-    public static Function<RelicForge, RelicForge> miningSpeedMultiplier (float v){
-        return F.set(r -> r.miningSpeedMultiplier = v);
+    public RelicForge miningSpeedMultiplier (float v){
+        miningSpeedMultiplier = v; return this;
     }
 
-    public static Function<RelicForge, RelicForge> durability (int v){
-        return F.set(r -> r.durability = v);
+    public RelicForge durability (int v){
+        durability = v; return this;
     }
 
-    public static Function<RelicForge, RelicForge> miningLevel (int v){
-        return F.set(r -> r.miningLevel = v);
+    public RelicForge miningLevel (int v){
+        miningLevel = v; return this;
     }
 
-    public static Function<RelicForge, RelicForge> enchantability (int v){
-        return F.set(r -> r.enchantability = v);
+    public RelicForge enchantability (int v){
+        enchantability = v; return this;
     }
 
-    public static Function<RelicForge, RelicForge> repairIngredient (Supplier<Ingredient> v){
-        return F.set(r -> r.repairIngredient = v);
+    public RelicForge repairIngredient (Supplier<Ingredient> v){
+        repairIngredient = v; return this;
     }
 
-    public static Function<RelicForge, RelicForge> effectiveBlocks (TagKey<Block> v){
-        return F.set(r -> r.effectiveBlocks = v);
+    public RelicForge effectiveBlocks (TagKey<Block> v){
+        effectiveBlocks = v; return this;
     }
 
-    public static Function<RelicForge, RelicForge> effect (Supplier<Effect> e){
-        return F.set(r -> r.effects.add(e.get()));
+    public RelicForge effect (Effect e){
+        effects.add(e); return this;
     }
 }

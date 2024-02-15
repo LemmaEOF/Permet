@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics;
+package gay.lemmaeof.permet.relics.magic;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -15,7 +15,7 @@ public class F {
     }
 
     @SafeVarargs
-    public static <T> Function<T, T> compose(Function<T, T>... funcs) {
+    public static <T, R> Function<? extends T, ? super T> compose(Function<T, T>... funcs) {
         return reduce(Function<T, T>::compose, funcs);
     }
 
@@ -24,7 +24,7 @@ public class F {
         return reduce(Function<T, T>::andThen, funcs);
     }
 
-    public static <T> Function<T, T> set(Consumer<T> consumer) {
+    public static <T> Function<T, T> map(Consumer<T> consumer) {
         return e -> {
             consumer.accept(e);
             return e;

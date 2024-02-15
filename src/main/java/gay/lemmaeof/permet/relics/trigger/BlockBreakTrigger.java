@@ -1,6 +1,7 @@
 package gay.lemmaeof.permet.relics.trigger;
 
 public class BlockBreakTrigger implements Trigger {
+	BlockBreakTrigger() {}
 
 	@Override
 	public boolean test(TriggerContext t) {

@@ -30,7 +30,7 @@ public class PermetItems {
 	public static final Item OL_RELIABLE = register("ol_reliable", new OlReliableItem(PermetToolMaterial.PERMET, 3, -4, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 	public static final Item BIG_KNIFE = register("big_knife", new BigKnifeItem(PermetToolMaterial.PERMET, 3, -2.4f, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 
-	public static final List<Item> SWAGGER_WARNING = Example.test(PermetItems::register);
+	public static final Item[] SWAGGER_WARNING = Example.test(PermetItems::register);
 
 	public static final ItemGroup PERMET_GROUP = Registry.register(Registries.ITEM_GROUP, new Identifier(Permet.MODID, "permet"),
 			FabricItemGroup.builder()
