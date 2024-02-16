@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import gay.lemmaeof.permet.relics.effect.Effect;
+import gay.lemmaeof.permet.relics.effect.EffectForge;
 import gay.lemmaeof.permet.relics.magic.Forge;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -88,5 +89,9 @@ public final class RelicForge extends Forge<Relic, RelicForge> {
 
     public RelicForge effect (Effect e){
         effects.add(e); return this;
+    }
+
+    public RelicForge effect (Supplier<EffectForge> e){
+        return effect(e.get().forge());
     }
 }

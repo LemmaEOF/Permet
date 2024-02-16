@@ -18,7 +18,6 @@ import net.minecraft.item.ToolMaterials;
 public class Example {
     public static Item[] test(BiFunction<String, Item, Item> regFunc) {
         /*
-        * 
         * we use the builder pattern for more traditional object
         * composition, and compose functions for more complex behavior.
         */
@@ -43,9 +42,9 @@ public class Example {
         Supplier<EffectForge> burnGuysStronger = () -> burnGuysEffect.get().modify(enhanceEffect);
 
         // We can also determine upgrade attributes without considering the actual item we're upgrading
-        Function<RelicForge, RelicForge> t2Upgrade = r -> r.effect(burnGuysEffect.get().forge());
+        Function<RelicForge, RelicForge> t2Upgrade = r -> r.effect(burnGuysEffect);
         Function<RelicForge, RelicForge> t3Upgrade = t2Upgrade.andThen(r -> r.material(ToolMaterials.NETHERITE));
-        Function<RelicForge, RelicForge> t3Sidegrade = t2Upgrade.andThen(r -> r.effect(burnGuysStronger.get().forge()));
+        Function<RelicForge, RelicForge> t3Sidegrade = t2Upgrade.andThen(r -> r.effect(burnGuysStronger));
 
         // Finally, we apply all spells to create the upgrade tree.
         // There's a number of ways to do this, depending on what you think is pretty.
