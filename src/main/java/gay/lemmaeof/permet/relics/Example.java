@@ -4,16 +4,19 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import gay.lemmaeof.permet.relics.effect.Effect;
+import gay.lemmaeof.permet.init.PermetFlags;
 import gay.lemmaeof.permet.relics.effect.EffectForge;
-import gay.lemmaeof.permet.relics.effect.FlameEffect;
 import gay.lemmaeof.permet.relics.effect.EffectProperty;
+import gay.lemmaeof.permet.relics.effect.example.CarvingEffect;
+import gay.lemmaeof.permet.relics.effect.example.FlameEffect;
 import gay.lemmaeof.permet.relics.proto.Relic;
 import gay.lemmaeof.permet.relics.proto.RelicForge;
-import gay.lemmaeof.permet.relics.target.Target;
 import gay.lemmaeof.permet.relics.trigger.Trigger;
+import gay.lemmaeof.permet.util.PermetToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.resource.featuretoggle.FeatureFlag;
+import net.minecraft.util.UseAction;
 
 public class Example {
     public static Item[] test(BiFunction<String, Item, Item> regFunc) {
@@ -31,9 +34,7 @@ public class Example {
 
         // We also want some fun magic effects. This one should set
         // an enemy on fire on hit.
-        Supplier<EffectForge> burnGuysEffect = () -> new EffectForge(FlameEffect::new)
-            .trigger(Trigger.HIT)
-            .target(Target.ENTITY);
+        Supplier<EffectForge> burnGuysEffect = () -> new EffectForge(FlameEffect::new);
         
         // We can make a stronger version of the effect by modifying its properties.
         Function<EffectForge, EffectForge> enhanceEffect = e -> e
@@ -64,5 +65,31 @@ public class Example {
         var MAGIC_SWAG = regFunc.apply("volcano_axe_t3", magicAxeT3);
 
         return new Item[]{SWAG, SWAG2, SWAG3, MAGIC_SWAG};
+    }
+
+    public static Item makeBigKnife(BiFunction<String, Item, Item> regFunc, BiFunction<Item.Settings, FeatureFlag, Item.Settings> flagged) {
+        // var carvingModifier = F.<Trigger, EffectForge>fold(EffectForge::trigger, 
+        //         Trigger.USE_ENTITY, Trigger.USE_TICK, Trigger.USE_STOP, Trigger.USE_FINISH
+        //     ).apply(new EffectForge(CarvingEffect::new));
+
+        // sorry, had to get that out of my system. here's a normal one:
+        EffectForge carvingModifier = new EffectForge(CarvingEffect::new)
+            // Carving effect requires all these triggers to function
+            .trigger(Trigger.USE_ENTITY)
+            .trigger(Trigger.USE_TICK)
+            .trigger(Trigger.USE_STOP)
+            .trigger(Trigger.USE_FINISH);
+
+        Relic bigKnife = new RelicForge()
+            .attackDamage(3)
+            .attackSpeed(-2.4f)
+            .effect(carvingModifier.forge())
+            .maxUseTime((r, i) -> 60)
+            .useAction((r, i) -> UseAction.BRUSH)
+            .material(PermetToolMaterial.PERMET)
+            .settings(flagged.apply(new Item.Settings(), PermetFlags.PERFECTED))
+            .forge();
+
+        return regFunc.apply("relic_knife", bigKnife);
     }
 }

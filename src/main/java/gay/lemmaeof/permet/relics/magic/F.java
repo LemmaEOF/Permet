@@ -30,4 +30,14 @@ public class F {
             return e;
         };
     }
+
+    @SafeVarargs
+    public static <T, R> Function<R, R> fold(BiFunction<R, T, R> func, T... args) {
+        return proto -> {
+            for (int i=0; i<args.length; i++) {
+                proto = func.apply(proto, args[i]);
+            }
+            return proto;
+        };
+    }
 }

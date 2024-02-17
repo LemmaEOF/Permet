@@ -2,23 +2,24 @@ package gay.lemmaeof.permet.relics.effect;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
-import gay.lemmaeof.permet.relics.target.Target;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+
 import gay.lemmaeof.permet.relics.trigger.Trigger;
 import gay.lemmaeof.permet.relics.trigger.TriggerContext;
 
 public abstract class Effect {
 
-    public abstract void apply(TriggerContext ctx, Target target);
+    public abstract void apply(TriggerContext<?> ctx);
 
-    public Effect(Trigger trg, Target tgt, Map<EffectProperty<?>, Object> props) {
-        trigger = trg;
-        target = tgt;
-        properties = new IdentityHashMap<>(props);
+    public Effect(Multimap<Trigger, Predicate<TriggerContext<?>>> triggers, Map<EffectProperty<?>, Object> props) {
+        this.triggers = ImmutableMultimap.copyOf(triggers);
+        this.properties = new IdentityHashMap<>(props);
     }
 
-    protected Trigger trigger;
-    protected Target target;
+    protected ImmutableMultimap<Trigger, Predicate<TriggerContext<?>>> triggers = ImmutableMultimap.of();
     protected Map<EffectProperty<?>, Object> properties;
 
     // the argument will guarantee the type!! I hope!!!
@@ -26,5 +27,9 @@ public abstract class Effect {
     @SuppressWarnings("unchecked")
     public <T> T property(EffectProperty<T> prop) {
         return (T)properties.get(prop);
+    }
+
+    public ImmutableMultimap<Trigger, Predicate<TriggerContext<?>>> getTriggers() {
+        return ImmutableMultimap.copyOf(triggers);
     }
 }

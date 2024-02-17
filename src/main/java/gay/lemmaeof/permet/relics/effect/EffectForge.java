@@ -2,34 +2,38 @@ package gay.lemmaeof.permet.relics.effect;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-import com.mojang.datafixers.util.Function3;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import gay.lemmaeof.permet.relics.magic.Forge;
-import gay.lemmaeof.permet.relics.target.Target;
 import gay.lemmaeof.permet.relics.trigger.Trigger;
+import gay.lemmaeof.permet.relics.trigger.TriggerContext;
 
 public class EffectForge extends Forge<Effect, EffectForge> {
 
-    private final Function3<Trigger, Target, Map<EffectProperty<?>, Object>, Effect> effect;
-    private Trigger trigger;
-    private Target target;
-    private Map<EffectProperty<?>, Object> properties = new IdentityHashMap<>();
-    private Function<Effect, Effect> modifications = e -> e;
+    protected final BiFunction<Multimap<Trigger, Predicate<TriggerContext<?>>>, Map<EffectProperty<?>, Object>, Effect> effect;
+    protected final Multimap<Trigger, Predicate<TriggerContext<?>>> triggers = HashMultimap.create();
+    protected final Map<EffectProperty<?>, Object> properties = new IdentityHashMap<>();
+    protected Function<Effect, Effect> modifications = e -> e;
 
 	@Override
 	public Effect forge() {
-		return modifications.apply(effect.apply(trigger, target, properties));
-        
+		return modifications.apply(effect.apply(triggers, properties));
 	}
 
-    public EffectForge(Function3<Trigger, Target, Map<EffectProperty<?>, Object>, Effect> constructor ) {
-        effect = constructor;
+    public EffectForge(BiFunction<Multimap<Trigger, Predicate<TriggerContext<?>>>, Map<EffectProperty<?>, Object>, Effect> factory ) {
+        effect = factory;
     }
 
-    public EffectForge trigger(Trigger t){ this.trigger = t; return this; }
-    public EffectForge target(Target t) { this.target = t; return this; }
+    public EffectForge trigger(Trigger trig) {return trigger(trig, Trigger.Condition.ALWAYS); }
+    public EffectForge trigger(Trigger trig, Predicate<TriggerContext<?>> predicate) {
+        triggers.put(trig, predicate);
+        return this;
+    }
 
     public EffectForge modify(Function<Effect, Effect> spell){
         modifications = modifications.compose(spell); return this;

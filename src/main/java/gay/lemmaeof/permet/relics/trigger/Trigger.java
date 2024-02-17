@@ -2,21 +2,17 @@ package gay.lemmaeof.permet.relics.trigger;
 
 import java.util.function.Predicate;
 
-public interface Trigger extends Predicate<TriggerContext> {
-    public static final HitTrigger HIT = new HitTrigger();
-    public static final BlockBreakTrigger BREAK = new BlockBreakTrigger();
-    public static final DamagedTrigger DAMAGED = new DamagedTrigger();
-    // finishUsing
-    // right click, left click
-    // release
-    // hold
-    // eat?
+public record Trigger (String type) {
+    public static final Trigger HIT = new Trigger("hit"); // todo
+    public static final Trigger DAMAGED = new Trigger("damaged"); // todo
+    public static final Trigger USE = new Trigger("use"); //todo
+    public static final Trigger USE_ENTITY = new Trigger("use_entity");
+    public static final Trigger USE_BLOCK = new Trigger("use_block");
+    public static final Trigger USE_TICK = new Trigger("use_tick");
+    public static final Trigger USE_FINISH = new Trigger("use_finish");
+    public static final Trigger USE_STOP = new Trigger("use_stop");
 
-    /*
-     * effects contain a list of triggers which assign them to "events" on relic creation
-     * 
-     * some effects may have mandatory triggers, others may be general and apply to any trigger.
-     * 
-     * 
-     */
+    public static class Condition {
+        public static final Predicate<TriggerContext<?>> ALWAYS = c -> true;
+    }
 }

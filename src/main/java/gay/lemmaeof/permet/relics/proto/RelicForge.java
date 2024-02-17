@@ -2,23 +2,30 @@ package gay.lemmaeof.permet.relics.proto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.mojang.datafixers.util.Function4;
+import com.mojang.datafixers.util.Function5;
 
 import gay.lemmaeof.permet.relics.effect.Effect;
 import gay.lemmaeof.permet.relics.effect.EffectForge;
+import gay.lemmaeof.permet.relics.magic.F;
 import gay.lemmaeof.permet.relics.magic.Forge;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.UseAction;
 
 public final class RelicForge extends Forge<Relic, RelicForge> {
     // cooler name for RelicBuilder
     // accepts modifications, then builds a Relic Item
+
+    private Function<Relic, Relic> modifiers = r -> r;
 
     private float attackSpeed;
     private float attackDamage;
@@ -33,9 +40,9 @@ public final class RelicForge extends Forge<Relic, RelicForge> {
     private List<Effect> effects = new ArrayList<>();
     private Item.Settings settings;
 
-    private Function4<Float, ToolMaterial, TagKey<Block>, Item.Settings, Relic> makeFunc = Relic::new;
+    private Function5<Float, ToolMaterial, TagKey<Block>, Item.Settings, List<Effect>, Relic> makeFunc = Relic::new;
 
-    public static RelicForge of(Function4<Float, ToolMaterial, TagKey<Block>, Item.Settings, Relic> alternate) {
+    public static RelicForge of(Function5<Float, ToolMaterial, TagKey<Block>, Item.Settings, List<Effect>, Relic> alternate) {
         var forge = new RelicForge();
         forge.makeFunc = alternate;
         return forge;
@@ -58,7 +65,9 @@ public final class RelicForge extends Forge<Relic, RelicForge> {
             repairIngredient
         );
 
-        return makeFunc.apply(attackSpeed, material, effectiveBlocks, settings == null ? new Item.Settings() : settings);
+        return modifiers.apply(
+            makeFunc.apply(attackSpeed, material, effectiveBlocks, settings == null ? new Item.Settings() : settings, effects)
+        );
     };
 
     public RelicForge material(ToolMaterial mat){
@@ -103,5 +112,20 @@ public final class RelicForge extends Forge<Relic, RelicForge> {
 
     public RelicForge effect (Supplier<EffectForge> e){
         return effect(e.get().forge());
+    }
+
+    public RelicForge settings (Item.Settings v) {
+        settings = v; return this;
+    }
+
+    // ill conceived ideas below ----------- wip, needs better design
+    public RelicForge maxUseTime(BiFunction<Relic, ItemStack, Integer> cb) {
+        modifiers = modifiers.compose(F.map(r -> r.setMaxUseTime(cb)));
+        return this;
+    }
+
+    public RelicForge useAction(BiFunction<Relic, ItemStack, UseAction> cb) {
+        modifiers = modifiers.compose(F.map(r -> r.setUseAction(cb)));
+        return this;
     }
 }
