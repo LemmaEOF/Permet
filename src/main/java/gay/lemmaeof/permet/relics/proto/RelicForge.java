@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.mojang.datafixers.util.Function4;
+
 import gay.lemmaeof.permet.relics.effect.Effect;
 import gay.lemmaeof.permet.relics.effect.EffectForge;
 import gay.lemmaeof.permet.relics.magic.Forge;
@@ -31,6 +33,14 @@ public final class RelicForge extends Forge<Relic, RelicForge> {
     private List<Effect> effects = new ArrayList<>();
     private Item.Settings settings;
 
+    private Function4<Float, ToolMaterial, TagKey<Block>, Item.Settings, Relic> makeFunc = Relic::new;
+
+    public static RelicForge of(Function4<Float, ToolMaterial, TagKey<Block>, Item.Settings, Relic> alternate) {
+        var forge = new RelicForge();
+        forge.makeFunc = alternate;
+        return forge;
+    }
+
     @Override
     public Relic forge(){
         if (material == null) 
@@ -48,7 +58,7 @@ public final class RelicForge extends Forge<Relic, RelicForge> {
             repairIngredient
         );
 
-        return new Relic(attackSpeed, material, effectiveBlocks, settings == null ? new Item.Settings() : settings);
+        return makeFunc.apply(attackSpeed, material, effectiveBlocks, settings == null ? new Item.Settings() : settings);
     };
 
     public RelicForge material(ToolMaterial mat){

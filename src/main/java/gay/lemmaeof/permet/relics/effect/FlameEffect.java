@@ -1,20 +1,21 @@
 package gay.lemmaeof.permet.relics.effect;
 
+import java.util.Map;
+
 import gay.lemmaeof.permet.relics.target.Target;
 import gay.lemmaeof.permet.relics.trigger.Trigger;
 import gay.lemmaeof.permet.relics.trigger.TriggerContext;
 
-public class FlameEffect extends Effect implements EffectProperty.Duration<FlameEffect>, EffectProperty.Intensity<FlameEffect> {
+public class FlameEffect extends Effect {
 
-    public FlameEffect(Trigger trg, Target tgt) { super(trg, tgt); }
+    public FlameEffect(Trigger trg, Target tgt, Map<EffectProperty<?>, Object> props) {
+        super(trg, tgt, props);
+        this.properties.putIfAbsent(EffectProperty.DURATION, DEFAULT_DURATION);
+        this.properties.putIfAbsent(EffectProperty.INTENSITY, DEFAULT_INTENSITY); 
+    }
 
-	private int intensity = 1;
-    private int duration = 1;
-
-    @Override public FlameEffect intensity(int v) { intensity = v; return this; }
-    @Override public int getIntensity() { return intensity; }
-    @Override public FlameEffect duration(int v) { duration = v; return this; }
-    @Override public int getDuration() { return duration; }
+    private int DEFAULT_DURATION = 1;
+    private float DEFAULT_INTENSITY = 1f;
 
     @Override
     public void apply(TriggerContext ctx, Target target) {

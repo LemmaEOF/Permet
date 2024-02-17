@@ -36,10 +36,11 @@ public class Example {
             .target(Target.ENTITY);
         
         // We can make a stronger version of the effect by modifying its properties.
-        Function<Effect, Effect> enhanceEffect = EffectProperty.Duration.of(5)
-            .compose(EffectProperty.Intensity.of(2));
+        Function<EffectForge, EffectForge> enhanceEffect = e -> e
+            .property(EffectProperty.DURATION, 10)
+            .property(EffectProperty.INTENSITY, 5f);
 
-        Supplier<EffectForge> burnGuysStronger = () -> burnGuysEffect.get().modify(enhanceEffect);
+        Supplier<EffectForge> burnGuysStronger = () -> enhanceEffect.apply(burnGuysEffect.get());
 
         // We can also determine upgrade attributes without considering the actual item we're upgrading
         Function<RelicForge, RelicForge> t2Upgrade = r -> r.effect(burnGuysEffect);
