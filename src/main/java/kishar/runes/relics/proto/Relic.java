@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.proto;
+package kishar.runes.relics.proto;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -7,9 +7,9 @@ import java.util.function.Supplier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import gay.lemmaeof.permet.relics.effect.Effect;
-import gay.lemmaeof.permet.relics.trigger.Trigger;
-import gay.lemmaeof.permet.relics.trigger.TriggerContext;
+import kishar.runes.relics.effect.Effect;
+import kishar.runes.relics.trigger.Trigger;
+import kishar.runes.relics.trigger.TriggerContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
@@ -27,6 +27,7 @@ import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
 public class Relic extends MiningToolItem {
+    
 
     protected Multimap<Trigger, Effect> effects = HashMultimap.create();
 

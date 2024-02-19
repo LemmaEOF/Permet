@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.magic;
+package kishar.runes.relics.magic;
 
 import java.util.function.Function;
 

@@ -1,24 +1,23 @@
-package gay.lemmaeof.permet.relics;
+package gay.lemmaeof.permet.init;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import gay.lemmaeof.permet.init.PermetFlags;
-import gay.lemmaeof.permet.relics.effect.EffectForge;
-import gay.lemmaeof.permet.relics.effect.EffectProperty;
-import gay.lemmaeof.permet.relics.effect.example.CarvingEffect;
-import gay.lemmaeof.permet.relics.effect.example.FlameEffect;
-import gay.lemmaeof.permet.relics.proto.Relic;
-import gay.lemmaeof.permet.relics.proto.RelicForge;
-import gay.lemmaeof.permet.relics.trigger.Trigger;
 import gay.lemmaeof.permet.util.PermetToolMaterial;
+import kishar.runes.relics.effect.EffectForge;
+import kishar.runes.relics.effect.EffectProperty;
+import kishar.runes.relics.effect.example.CarvingEffect;
+import kishar.runes.relics.effect.example.FlameEffect;
+import kishar.runes.relics.proto.Relic;
+import kishar.runes.relics.proto.RelicForge;
+import kishar.runes.relics.trigger.Trigger;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.util.UseAction;
 
-public class Example {
+public class RelicExample {
     public static Item[] test(BiFunction<String, Item, Item> regFunc) {
         /*
         * we use the builder pattern for more traditional object

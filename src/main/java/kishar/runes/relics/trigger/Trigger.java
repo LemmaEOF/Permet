@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.trigger;
+package kishar.runes.relics.trigger;
 
 import java.util.function.Predicate;
 

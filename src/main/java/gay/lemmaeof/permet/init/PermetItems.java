@@ -1,7 +1,6 @@
 package gay.lemmaeof.permet.init;
 
 import gay.lemmaeof.permet.Permet;
-import gay.lemmaeof.permet.relics.Example;
 import gay.lemmaeof.permet.util.PermetToolMaterial;
 import gay.lemmaeof.permet.weapon.cardbox.OlReliableItem;
 import gay.lemmaeof.permet.weapon.star.MagitekBowItem;
@@ -29,7 +28,7 @@ public class PermetItems {
 	public static final Item BIG_KNIFE = register("big_knife", new BigKnifeItem(PermetToolMaterial.PERMET, 3, -2.4f, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 
 	// public static final Item[] SWAGGER_WARNING = Example.test(PermetItems::register);
-	public static final Item RELIC_KNIFE = Example.makeBigKnife(PermetItems::register, PermetItems::flagged);
+	public static final Item RELIC_KNIFE = RelicExample.makeBigKnife(PermetItems::register, PermetItems::flagged);
 
 	public static final ItemGroup PERMET_GROUP = Registry.register(Registries.ITEM_GROUP, new Identifier(Permet.MODID, "permet"),
 			FabricItemGroup.builder()

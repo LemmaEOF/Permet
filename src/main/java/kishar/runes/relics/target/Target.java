@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.target;
+package kishar.runes.relics.target;
 
 public abstract class Target {
     public static final EntityTarget ENTITY = new EntityTarget();

@@ -1,6 +1,6 @@
-package gay.lemmaeof.permet.relics.trigger;
+package kishar.runes.relics.trigger;
 
-import gay.lemmaeof.permet.relics.proto.Relic;
+import kishar.runes.relics.proto.Relic;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;

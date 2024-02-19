@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.proto;
+package kishar.runes.relics.proto;
 
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;

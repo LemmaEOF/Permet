@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.effect.example;
+package kishar.runes.relics.effect.example;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -9,10 +9,10 @@ import com.google.common.collect.Multimap;
 
 import gay.lemmaeof.permet.init.PermetDamageTypes;
 import gay.lemmaeof.permet.init.PermetTags;
-import gay.lemmaeof.permet.relics.effect.Effect;
-import gay.lemmaeof.permet.relics.effect.EffectProperty;
-import gay.lemmaeof.permet.relics.trigger.Trigger;
-import gay.lemmaeof.permet.relics.trigger.TriggerContext;
+import kishar.runes.relics.effect.Effect;
+import kishar.runes.relics.effect.EffectProperty;
+import kishar.runes.relics.trigger.Trigger;
+import kishar.runes.relics.trigger.TriggerContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;

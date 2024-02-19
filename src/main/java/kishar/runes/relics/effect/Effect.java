@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.effect;
+package kishar.runes.relics.effect;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -7,8 +7,8 @@ import java.util.function.Predicate;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
-import gay.lemmaeof.permet.relics.trigger.Trigger;
-import gay.lemmaeof.permet.relics.trigger.TriggerContext;
+import kishar.runes.relics.trigger.Trigger;
+import kishar.runes.relics.trigger.TriggerContext;
 
 public abstract class Effect {
 

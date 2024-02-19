@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.effect;
+package kishar.runes.relics.effect;
 
 public class EffectProperty<T>  {
     private EffectProperty() {}

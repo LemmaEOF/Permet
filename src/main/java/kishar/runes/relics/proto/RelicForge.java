@@ -1,4 +1,4 @@
-package gay.lemmaeof.permet.relics.proto;
+package kishar.runes.relics.proto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,10 @@ import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Function5;
 
-import gay.lemmaeof.permet.relics.effect.Effect;
-import gay.lemmaeof.permet.relics.effect.EffectForge;
-import gay.lemmaeof.permet.relics.magic.F;
-import gay.lemmaeof.permet.relics.magic.Forge;
+import kishar.runes.relics.effect.Effect;
+import kishar.runes.relics.effect.EffectForge;
+import kishar.runes.relics.magic.F;
+import kishar.runes.relics.magic.Forge;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
