@@ -2,7 +2,6 @@ package kishar.runes.relics.effect;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -15,18 +14,18 @@ import kishar.runes.relics.trigger.TriggerContext;
 
 public class EffectForge extends Forge<Effect, EffectForge> {
 
-    protected final BiFunction<Multimap<Trigger, Predicate<TriggerContext<?>>>, Map<EffectProperty<?>, Object>, Effect> effect;
+    protected final EffectFactory factory;
     protected final Multimap<Trigger, Predicate<TriggerContext<?>>> triggers = HashMultimap.create();
     protected final Map<EffectProperty<?>, Object> properties = new IdentityHashMap<>();
     protected Function<Effect, Effect> modifications = e -> e;
 
 	@Override
 	public Effect forge() {
-		return modifications.apply(effect.apply(triggers, properties));
+		return modifications.apply(factory.create(triggers, properties));
 	}
 
-    public EffectForge(BiFunction<Multimap<Trigger, Predicate<TriggerContext<?>>>, Map<EffectProperty<?>, Object>, Effect> factory ) {
-        effect = factory;
+    public EffectForge(EffectFactory factory ) {
+        this.factory = factory;
     }
 
     public EffectForge trigger(Trigger trig) {return trigger(trig, Trigger.Condition.ALWAYS); }
@@ -45,6 +44,11 @@ public class EffectForge extends Forge<Effect, EffectForge> {
     public <T> EffectForge property(EffectProperty<T> prop, T value) {
         properties.put(prop, value);
         return this;
+    }
+
+    @FunctionalInterface
+    public interface EffectFactory {
+        Effect create(Multimap<Trigger, Predicate<TriggerContext<?>>> triggers, Map<EffectProperty<?>, Object> effects);
     }
     
 }

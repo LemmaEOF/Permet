@@ -19,7 +19,6 @@ public abstract class AbstractRelicForge<R extends AbstractRelicForge<R>> extend
     
     protected Function3<Item.Settings, ? super RelicCore<?>, List<Effect>, Relic> relicSource;
     protected Supplier<? extends RelicCore<?>> coreSource;
-
     protected Item.Settings settings;
     protected List<Effect> effects = new ArrayList<>();
     protected Function<RelicCore<?>, RelicCore<?>> coreAugments = c -> c;
@@ -31,7 +30,7 @@ public abstract class AbstractRelicForge<R extends AbstractRelicForge<R>> extend
             coreAugments.apply(coreSource.get()),
             new ArrayList<>(effects)
         );
-    };
+    }
     
     public R effect (Effect e){
         effects.add(e); return self();

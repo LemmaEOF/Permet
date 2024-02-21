@@ -12,15 +12,15 @@ import kishar.runes.relics.trigger.TriggerContext;
 
 public abstract class Effect {
 
-    public abstract void apply(TriggerContext<?> ctx);
+    protected ImmutableMultimap<Trigger, Predicate<TriggerContext<?>>> triggers;
+    protected Map<EffectProperty<?>, Object> properties;
 
     public Effect(Multimap<Trigger, Predicate<TriggerContext<?>>> triggers, Map<EffectProperty<?>, Object> props) {
         this.triggers = ImmutableMultimap.copyOf(triggers);
         this.properties = new IdentityHashMap<>(props);
     }
 
-    protected ImmutableMultimap<Trigger, Predicate<TriggerContext<?>>> triggers = ImmutableMultimap.of();
-    protected Map<EffectProperty<?>, Object> properties;
+    public abstract void apply(TriggerContext<?> ctx);
 
     // the argument will guarantee the type!! I hope!!!
     // vanilla does this!

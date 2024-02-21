@@ -6,6 +6,7 @@ import net.minecraft.recipe.Ingredient;
 import java.util.function.Supplier;
 
 public class RelicToolMaterial implements ToolMaterial {
+
 	private final int durability;
 	private final float miningSpeedMultiplier;
 	private final float attackDamage;
@@ -21,7 +22,7 @@ public class RelicToolMaterial implements ToolMaterial {
 			mat.getAttackDamage(),
 			mat.getMiningLevel() + core.getAspect(ToolRelicCore.MINING_LEVEL),
 			mat.getEnchantability() + core.getAspect(ItemRelicCore.ENCHANTABILITY),
-			core.getAspect(ItemRelicCore.REPAIR_INGREDIENT, () -> mat.getRepairIngredient())
+			core.getAspect(ItemRelicCore.REPAIR_INGREDIENT, mat::getRepairIngredient)
 		);
 	}
 

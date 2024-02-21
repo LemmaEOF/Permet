@@ -14,5 +14,5 @@ public abstract class Forge<T, R extends Forge<T, R>> implements SelfReferential
     public abstract T forge();
     public T forge(Function<R, R> spell) {
         return cast(spell).forge();
-    };
+    }
 }

@@ -24,7 +24,7 @@ import net.minecraft.util.UseAction;
 public class RelicExample {
     // public interface RelicSpell extends Function<RelicForge<?>, RelicForge<?>> {}
 
-    public static Item[] test(BiFunction<String, Item, Item> regFunc) {
+    public static Item[] test(BiFunction<String, Relic, Item> regFunc) {
         /*
         * we use the builder pattern for more traditional object
         * composition, and compose functions for more complex behavior.
@@ -68,15 +68,15 @@ public class RelicExample {
         Relic magicAxeT3 = swagAxeT2F.get().forge(t3Sidegrade);
 
         // then register all of them etc
-        var SWAG = regFunc.apply("swag_axe", baseAxe.asItem());
-        var SWAG2 = regFunc.apply("swag_axe_t2", swagAxeT2.asItem());
-        var SWAG3 = regFunc.apply("swag_axe_t3", swagAxeT3.asItem());
-        var MAGIC_SWAG = regFunc.apply("volcano_axe_t3", magicAxeT3.asItem());
+        var SWAG = regFunc.apply("swag_axe", baseAxe);
+        var SWAG2 = regFunc.apply("swag_axe_t2", swagAxeT2);
+        var SWAG3 = regFunc.apply("swag_axe_t3", swagAxeT3);
+        var MAGIC_SWAG = regFunc.apply("volcano_axe_t3", magicAxeT3);
 
         return new Item[]{SWAG, SWAG2, SWAG3, MAGIC_SWAG};
     }
 
-    public static Item makeBigKnife(BiFunction<String, Item, Item> regFunc, BiFunction<Item.Settings, FeatureFlag, Item.Settings> flagged) {
+    public static Item makeBigKnife(BiFunction<String, Relic, Item> regFunc) {
         // var carvingModifier = F.<Trigger, EffectForge>fold(EffectForge::trigger, 
         //         Trigger.USE_ENTITY, Trigger.USE_TICK, Trigger.USE_STOP, Trigger.USE_FINISH
         //     ).apply(new EffectForge(CarvingEffect::new));
@@ -97,10 +97,10 @@ public class RelicExample {
             .material(PermetToolMaterial.PERMET);
 
         var bigKnife = RelicForge.sword().baseCore(bigKnifeCore)
-            .settings(flagged.apply(new Item.Settings(), PermetFlags.PERFECTED))
+            .settings(new Item.Settings().requires(PermetFlags.PERFECTED))
             .effect(carvingModifier.forge())
             .forge();
 
-        return regFunc.apply("relic_knife", bigKnife.asItem());
+        return regFunc.apply("relic_knife", bigKnife);
     }
 }

@@ -64,7 +64,7 @@ public class BowRelic extends BowItem implements Relic {
 
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        return trigger(new TriggerContext<ItemStack>(this, Trigger.USE_FINISH, stack, world, user),
+        return trigger(new TriggerContext<>(this, Trigger.USE_FINISH, stack, world, user),
             () -> super.finishUsing(stack, world, user));
         
     }

@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class RelicCoreBase<R extends RelicCoreBase<R>> implements RelicCore<R> {
 
-    private Map<RelicCore.Aspect<?>, Object> aspects = new HashMap<>(); 
-
     public static final class BasicCore extends RelicCoreBase<BasicCore> {}
+
+    private final Map<RelicCore.Aspect<?>, Object> aspects = new HashMap<>();
 
     @Override
     public <T> R aspect(Aspect<T> key, T val) {
