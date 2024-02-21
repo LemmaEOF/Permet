@@ -1,15 +1,12 @@
 package kishar.runes.relics.effect;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.function.Predicate;
-
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-
 import kishar.runes.relics.proto.core.RelicCore;
 import kishar.runes.relics.trigger.Trigger;
 import kishar.runes.relics.trigger.TriggerContext;
+
+import java.util.function.Predicate;
 
 public abstract class Effect {
 
@@ -27,7 +24,7 @@ public abstract class Effect {
     // vanilla does this!
     @SuppressWarnings("unchecked")
     public <T> T aspect(RelicCore.Aspect<T> aspect) {
-        return (T)core.getAspect(aspect);
+        return core.getAspect(aspect);
     }
 
     public ImmutableMultimap<Trigger, Predicate<TriggerContext<?>>> getTriggers() {

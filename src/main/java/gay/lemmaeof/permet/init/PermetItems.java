@@ -35,7 +35,7 @@ public class PermetItems {
 	public static final Item OL_RELIABLE = register("ol_reliable", new OlReliableItem(PermetToolMaterial.PERMET, 3, -4, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 
 	static {
-		Foundry.build("big_knife", BigKnife.base, BigKnife.carvingModifier::forge);
+		Foundry.build("dagger", "big_knife", BigKnife.base, BigKnife.carvingModifier::forge);
 	}
 
 	public static final Aspect<Integer> SHELL_TIER = new Aspect<>(1);
@@ -76,19 +76,19 @@ public class PermetItems {
 
 		private static Function<RelicForge, RelicForge> netherite = r -> r.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_NETHERITE);
 
-		public static void build(String name, Supplier<RelicForge> base, Supplier<Effect> t2Effect, Supplier<Effect> t4Effect) {
-			register(name+"_t1", make(base, 1, r -> r.cast(diamond)));
-			register(name+"_t2", make(base, 2, PermetFlags.PHASE_2, r -> r.cast(diamond).effect(t2Effect.get())));
-			register(name+"_t3", make(base, 3, PermetFlags.SYMBIONIC, r -> r.cast(netherite).effect(t2Effect.get())));
+		public static void build(String baseName, String finalName, Supplier<RelicForge> base, Supplier<Effect> t2Effect, Supplier<Effect> t4Effect) {
+			register("vanadic_"+baseName, make(base, 1, r -> r.cast(diamond)));
+			register(base+"_t2", make(base, 2, PermetFlags.PHASE_2, r -> r.cast(diamond).effect(t2Effect.get())));
+			register("symbionic_"+baseName, make(base, 3, PermetFlags.SYMBIONIC, r -> r.cast(netherite).effect(t2Effect.get())));
 			if (t4Effect == null) { // no new effect, effect will use shell level to determine result
-				register(name+"_t4", make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite)));
+				register(finalName, make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite)));
 			} else {
-				register(name+"_t4", make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite).effect(t4Effect.get())));
+				register(finalName, make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite).effect(t4Effect.get())));
 			}
 		}
 
-		public static void build(String name, Supplier<RelicForge> base, Supplier<Effect> t2Effect) {
-			build(name, base, t2Effect, null);
+		public static void build(String baseName, String finalName, Supplier<RelicForge> base, Supplier<Effect> t2Effect) {
+			build(baseName, finalName, base, t2Effect, null);
 		}
 
 	}	
