@@ -10,7 +10,7 @@ import kishar.runes.relics.proto.Relic;
 import kishar.runes.relics.proto.core.ItemRelicCore;
 import kishar.runes.relics.proto.core.RelicCore;
 import kishar.runes.relics.proto.core.RelicCoreBase;
-import kishar.runes.relics.proto.core.RelicToolMaterial;
+import kishar.runes.relics.proto.RelicToolMaterial;
 import kishar.runes.relics.proto.core.ToolRelicCore;
 import kishar.runes.relics.trigger.Trigger;
 import kishar.runes.relics.trigger.TriggerContext;

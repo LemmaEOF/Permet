@@ -9,6 +9,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import kishar.runes.relics.magic.Forge;
+import kishar.runes.relics.proto.core.RelicCore;
 import kishar.runes.relics.trigger.Trigger;
 import kishar.runes.relics.trigger.TriggerContext;
 
@@ -16,16 +17,18 @@ public class EffectForge extends Forge<Effect, EffectForge> {
 
     protected final EffectFactory factory;
     protected final Multimap<Trigger, Predicate<TriggerContext<?>>> triggers = HashMultimap.create();
-    protected final Map<EffectProperty<?>, Object> properties = new IdentityHashMap<>();
+    //TODO: do we need a type on the core?
+    protected final RelicCore<?> core;
     protected Function<Effect, Effect> modifications = e -> e;
 
 	@Override
 	public Effect forge() {
-		return modifications.apply(factory.create(triggers, properties));
+		return modifications.apply(factory.create(triggers, core));
 	}
 
-    public EffectForge(EffectFactory factory ) {
+    public EffectForge(EffectFactory factory, RelicCore<?> core) {
         this.factory = factory;
+        this.core = core;
     }
 
     public EffectForge trigger(Trigger trig) {return trigger(trig, Trigger.Condition.ALWAYS); }
@@ -41,14 +44,14 @@ public class EffectForge extends Forge<Effect, EffectForge> {
         modifications = e -> e; return this;
     }
 
-    public <T> EffectForge property(EffectProperty<T> prop, T value) {
-        properties.put(prop, value);
+    public <T> EffectForge aspect(RelicCore.Aspect<T> aspect, T value) {
+        core.aspect(aspect, value);
         return this;
     }
 
     @FunctionalInterface
     public interface EffectFactory {
-        Effect create(Multimap<Trigger, Predicate<TriggerContext<?>>> triggers, Map<EffectProperty<?>, Object> effects);
+        Effect create(Multimap<Trigger, Predicate<TriggerContext<?>>> triggers, RelicCore<?> core);
     }
     
 }

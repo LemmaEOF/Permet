@@ -61,7 +61,7 @@ public class PermetItems {
 	private static class Foundry {
 		// you get the idea.
 		private static Function<RelicForge, RelicForge> setShell(int v) {
-			return r -> r.core(core -> core.aspect(SHELL_TIER, v)); 
+			return r -> r.aspect(SHELL_TIER, v);
 		}
 
 		private static Item make (Supplier<RelicForge> s, int t, FeatureFlag flags, Function<RelicForge, RelicForge> f) {
@@ -72,11 +72,9 @@ public class PermetItems {
 			return f.apply(s.get()).cast(setShell(t)).settings(new Item.Settings()).forge().asItem();
 		}
 
-		private static Function<RelicForge, RelicForge> diamond = r -> r.core(core -> core
-			.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_DIAMOND)
-		);
+		private static Function<RelicForge, RelicForge> diamond = r -> r.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_DIAMOND);
 
-		private static Function<RelicForge, RelicForge> netherite = r -> r.core(core -> core.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_NETHERITE));
+		private static Function<RelicForge, RelicForge> netherite = r -> r.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_NETHERITE);
 
 		public static void build(String name, Supplier<RelicForge> base, Supplier<Effect> t2Effect, Supplier<Effect> t4Effect) {
 			register(name+"_t1", make(base, 1, r -> r.cast(diamond)));

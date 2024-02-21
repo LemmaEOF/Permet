@@ -1,5 +1,8 @@
-package kishar.runes.relics.proto.core;
+package kishar.runes.relics.proto;
 
+import kishar.runes.relics.proto.core.ItemRelicCore;
+import kishar.runes.relics.proto.core.RelicCore;
+import kishar.runes.relics.proto.core.ToolRelicCore;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
 

@@ -1,5 +1,6 @@
 package kishar.runes.relics.proto.core;
 
+import kishar.runes.relics.proto.RelicToolMaterial;
 import net.minecraft.block.Block;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
