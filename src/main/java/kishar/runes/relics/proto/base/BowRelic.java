@@ -40,6 +40,11 @@ public class BowRelic extends BowItem implements Relic {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends RelicCore<T>> RelicCore<T> core() {
+        return (T) core;
+    }
+
     public <R, T extends TriggerContext<R>> R trigger(T ctx){
         effects.get(ctx.trigger).forEach(e -> e.apply(ctx));
         return ctx.getResult();

@@ -50,6 +50,11 @@ public class MiningToolRelic extends MiningToolItem implements Relic {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends RelicCore<T>> RelicCore<T> core() {
+        return (T) core;
+    }
+
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
         return isSuitableFor(state) ? this.miningSpeed : 1.0F;
     }

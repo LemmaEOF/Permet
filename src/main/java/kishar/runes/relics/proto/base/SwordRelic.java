@@ -46,6 +46,11 @@ public class SwordRelic extends SwordItem implements Relic {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends RelicCore<T>> RelicCore<T> core() {
+        return (T) core;
+    }
+
     @Override
 	public int getMaxUseTime(ItemStack stack) {
 		return core.getAspect(ItemRelicCore.MAX_USE_TIME);

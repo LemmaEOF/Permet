@@ -1,4 +1,4 @@
-package kishar.runes.relics.effect.example;
+package gay.lemmaeof.permet.weapon.zydra;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.Multimap;
 
 import gay.lemmaeof.permet.init.PermetDamageTypes;
+import gay.lemmaeof.permet.init.PermetItems;
 import gay.lemmaeof.permet.init.PermetTags;
 import kishar.runes.relics.effect.Effect;
 import kishar.runes.relics.effect.EffectProperty;
@@ -49,7 +50,7 @@ public class CarvingEffect extends Effect {
         } else if (ctx.trigger == Trigger.USE_STOP) {
             onStoppedUsing(ctx.stack, ctx.world);
         } else if (ctx.trigger == Trigger.USE_FINISH) {
-            finishUsing(ctx.stack, ctx.world, ctx.user);
+            finishUsing(ctx.stack, ctx.world, ctx.user, ctx.relic.core().getAspect(PermetItems.SHELL_TIER));
         }
     }
 
@@ -85,25 +86,29 @@ public class CarvingEffect extends Effect {
 		}
 	}
 
-	private void finishUsing(ItemStack stack, World world, LivingEntity user) {
+	private void finishUsing(ItemStack stack, World world, LivingEntity user, int tier) {
 		if (!world.isClient() && user instanceof PlayerEntity player) {
 			EntityHitResult res = raycast(user, 5);
 			if (res != null) {
 				Entity target = res.getEntity();
 				if (target.getUuid().equals(stack.getOrCreateNbt().getUuid("target")) && target instanceof LivingEntity living) {
 					DamageSource carve = world.getDamageSources().create(PermetDamageTypes.CARVE, player);
-					Identifier identifier = living.getLootTable();
-					LootTable lootTable = world.getServer().getLootManager().getLootTable(identifier);
-					LootContextParameterSet.Builder builder = new LootContextParameterSet.Builder((ServerWorld)world)
-							.add(LootContextParameters.THIS_ENTITY, target)
-							.add(LootContextParameters.ORIGIN, living.getPos())
-							.add(LootContextParameters.DAMAGE_SOURCE, carve)
-							.addOptional(LootContextParameters.KILLER_ENTITY, user)
-							.addOptional(LootContextParameters.DIRECT_KILLER_ENTITY, user)
-							.add(LootContextParameters.LAST_DAMAGE_PLAYER, player).luck(player.getLuck());
-
-					LootContextParameterSet lootContextParameterSet = builder.build(LootContextTypes.ENTITY);
-					lootTable.generateLoot(lootContextParameterSet, living.getLootTableSeed(), living::dropStack);
+					
+					if (tier >= 4) {
+						Identifier identifier = living.getLootTable();
+						LootTable lootTable = world.getServer().getLootManager().getLootTable(identifier);
+						LootContextParameterSet.Builder builder = new LootContextParameterSet.Builder((ServerWorld)world)
+								.add(LootContextParameters.THIS_ENTITY, target)
+								.add(LootContextParameters.ORIGIN, living.getPos())
+								.add(LootContextParameters.DAMAGE_SOURCE, carve)
+								.addOptional(LootContextParameters.KILLER_ENTITY, user)
+								.addOptional(LootContextParameters.DIRECT_KILLER_ENTITY, user)
+								.add(LootContextParameters.LAST_DAMAGE_PLAYER, player).luck(player.getLuck());
+							
+						LootContextParameterSet lootContextParameterSet = builder.build(LootContextTypes.ENTITY);
+						lootTable.generateLoot(lootContextParameterSet, living.getLootTableSeed(), living::dropStack);
+					}
+					
 					//TODO: carve sound
 					living.addCommandTag("permet:carved");
 					living.damage(carve, Math.min(living.getHealth() / 2, 10));

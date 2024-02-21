@@ -1,10 +1,18 @@
 package gay.lemmaeof.permet.init;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import gay.lemmaeof.permet.Permet;
 import gay.lemmaeof.permet.util.PermetToolMaterial;
 import gay.lemmaeof.permet.weapon.cardbox.OlReliableItem;
 import gay.lemmaeof.permet.weapon.star.MagitekBowItem;
-import gay.lemmaeof.permet.weapon.zydra.BigKnifeItem;
+import gay.lemmaeof.permet.weapon.zydra.BigKnife;
+import kishar.runes.relics.effect.Effect;
+import kishar.runes.relics.proto.RelicForge;
+import kishar.runes.relics.proto.core.RelicCore;
+import kishar.runes.relics.proto.core.ToolRelicCore;
+import kishar.runes.relics.proto.core.RelicCore.Aspect;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
@@ -25,10 +33,12 @@ public class PermetItems {
 	public static final Item PERFECTED_SHELL_UNIT = register("perfected_shell_unit", new Item(flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 	public static final Item MAGITEK_BOW = register("magitek_bow", new MagitekBowItem(flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 	public static final Item OL_RELIABLE = register("ol_reliable", new OlReliableItem(PermetToolMaterial.PERMET, 3, -4, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
-	public static final Item BIG_KNIFE = register("big_knife", new BigKnifeItem(PermetToolMaterial.PERMET, 3, -2.4f, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 
-	// public static final Item[] SWAGGER_WARNING = Example.test(PermetItems::register);
-	public static final Item RELIC_KNIFE = RelicExample.makeBigKnife(PermetItems::register, PermetItems::flagged);
+	static {
+		Foundry.build("big_knife", BigKnife.base, BigKnife.carvingModifier::forge);
+	}
+
+	public static final Aspect<Integer> SHELL_TIER = new Aspect<>(1);
 
 	public static final ItemGroup PERMET_GROUP = Registry.register(Registries.ITEM_GROUP, new Identifier(Permet.MODID, "permet"),
 			FabricItemGroup.builder()
@@ -43,17 +53,47 @@ public class PermetItems {
 						entries.add(PERFECTED_SHELL_UNIT);
 						entries.add(MAGITEK_BOW);
 						entries.add(OL_RELIABLE);
-						entries.add(BIG_KNIFE);
-
-						// for (var EPIC_WIN_ITEM : SWAGGER_WARNING) {
-						// 	entries.add(EPIC_WIN_ITEM);
-						// }
-						entries.add(RELIC_KNIFE);
+						
 					}))
 					.build()
 	);
 
-	
+	private static class Foundry {
+		// you get the idea.
+		private static Function<RelicForge, RelicForge> setShell(int v) {
+			return r -> r.core(core -> core.aspect(SHELL_TIER, v)); 
+		}
+
+		private static Item make (Supplier<RelicForge> s, int t, FeatureFlag flags, Function<RelicForge, RelicForge> f) {
+			return f.apply(s.get()).cast(setShell(t)).settings(flagged(new Item.Settings(), flags)).forge().asItem();
+		}
+
+		private static Item make (Supplier<RelicForge> s, int t, Function<RelicForge, RelicForge> f) {
+			return f.apply(s.get()).cast(setShell(t)).settings(new Item.Settings()).forge().asItem();
+		}
+
+		private static Function<RelicForge, RelicForge> diamond = r -> r.core(core -> core
+			.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_DIAMOND)
+		);
+
+		private static Function<RelicForge, RelicForge> netherite = r -> r.core(core -> core.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_NETHERITE));
+
+		public static void build(String name, Supplier<RelicForge> base, Supplier<Effect> t2Effect, Supplier<Effect> t4Effect) {
+			register(name+"_t1", make(base, 1, r -> r.cast(diamond)));
+			register(name+"_t2", make(base, 2, PermetFlags.PHASE_2, r -> r.cast(diamond).effect(t2Effect.get())));
+			register(name+"_t3", make(base, 3, PermetFlags.SYMBIONIC, r -> r.cast(netherite).effect(t2Effect.get())));
+			if (t4Effect == null) { // no new effect, effect will use shell level to determine result
+				register(name+"_t4", make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite)));
+			} else {
+				register(name+"_t4", make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite).effect(t4Effect.get())));
+			}
+		}
+
+		public static void build(String name, Supplier<RelicForge> base, Supplier<Effect> t2Effect) {
+			build(name, base, t2Effect, null);
+		}
+
+	}	
 
 	public static void init() {}
 

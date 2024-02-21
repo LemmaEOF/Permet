@@ -14,6 +14,9 @@ public class PermetToolMaterial implements ToolMaterial {
 	private final int enchantability;
 	private final Supplier<Ingredient> repairIngredient;
 	public static final PermetToolMaterial PERMET = new PermetToolMaterial(0, 0, 6, 4, 18, () -> Ingredient.ofItems(PermetItems.PERMET));
+	
+	public static final PermetToolMaterial PERMET_DIAMOND = new PermetToolMaterial(0, 8, 3, 3, 10, () -> Ingredient.ofItems(PermetItems.PERMET));
+	public static final PermetToolMaterial PERMET_NETHERITE = new PermetToolMaterial(0, 9, 4, 4, 15, () -> Ingredient.ofItems(PermetItems.PERMET));
 
 	private PermetToolMaterial(int durability, float miningSpeedMultiplier, float attackDamage,
 							   int miningLevel, int enchantability, Supplier<Ingredient> repairIngredient) {

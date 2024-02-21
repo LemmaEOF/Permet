@@ -5,9 +5,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import gay.lemmaeof.permet.util.PermetToolMaterial;
+import gay.lemmaeof.permet.weapon.zydra.CarvingEffect;
 import kishar.runes.relics.effect.EffectForge;
 import kishar.runes.relics.effect.EffectProperty;
-import kishar.runes.relics.effect.example.CarvingEffect;
 import kishar.runes.relics.effect.example.FlameEffect;
 import kishar.runes.relics.proto.Relic;
 import kishar.runes.relics.proto.RelicForge;
@@ -97,7 +97,7 @@ public class RelicExample {
             .material(PermetToolMaterial.PERMET);
 
         var bigKnife = RelicForge.sword().baseCore(bigKnifeCore)
-            .settings(() -> flagged.apply(new Item.Settings(), PermetFlags.PERFECTED))
+            .settings(flagged.apply(new Item.Settings(), PermetFlags.PERFECTED))
             .effect(carvingModifier.forge())
             .forge();
 
