@@ -23,7 +23,7 @@ public class RelicCoreBase<R extends RelicCoreBase<R>> implements RelicCore<R> {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getAspect(Aspect<T> key) {
-        return (T) aspects.get(key);
+        return (T) aspects.getOrDefault(key, key.defaultValue);
     }
     
 }
