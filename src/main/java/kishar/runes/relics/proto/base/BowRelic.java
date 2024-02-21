@@ -13,8 +13,15 @@ import kishar.runes.relics.proto.core.RelicCore;
 import kishar.runes.relics.proto.core.RelicCoreBase;
 import kishar.runes.relics.trigger.Trigger;
 import kishar.runes.relics.trigger.TriggerContext;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.world.World;
 
 public class BowRelic extends BowItem implements Relic {
 
@@ -33,10 +40,40 @@ public class BowRelic extends BowItem implements Relic {
         }
     }
 
+    public <R, T extends TriggerContext<R>> R trigger(T ctx){
+        effects.get(ctx.trigger).forEach(e -> e.apply(ctx));
+        return ctx.getResult();
+    }
+
     @Override
-    public <R, T extends TriggerContext<R>> R trigger(T ctx) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'trigger'");
+	public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+        super.onStoppedUsing(stack, world, user, remainingUseTicks);
+		trigger(new TriggerContext.Using(this, Trigger.USE_STOP, stack, world, user, remainingUseTicks));
+	}
+
+    @Override
+    public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+        super.usageTick(world, user, stack, remainingUseTicks);
+        trigger(new TriggerContext.Using(this, Trigger.USE_TICK, stack, world, user, remainingUseTicks));
+    }
+
+    @Override
+    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
+        return trigger(new TriggerContext<ItemStack>(this, Trigger.USE_FINISH, stack, world, user),
+            () -> super.finishUsing(stack, world, user));
+        
+    }
+
+    @Override
+    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        return trigger(new TriggerContext.OnEntity(this, stack, entity.getWorld(), user, entity, hand),
+            () -> super.useOnEntity(stack, user, entity, hand));
+    }
+
+    @Override
+    public ActionResult useOnBlock(ItemUsageContext context) {
+        return trigger(new TriggerContext.OnBlock(this, context.getStack(), context.getWorld(), context.getPlayer(), context),
+            () -> super.useOnBlock(context));
     }
 
 

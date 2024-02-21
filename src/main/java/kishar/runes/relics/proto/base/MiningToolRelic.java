@@ -49,6 +49,7 @@ public class MiningToolRelic extends MiningToolItem implements Relic {
             }
         }
     }
+
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
         return isSuitableFor(state) ? this.miningSpeed : 1.0F;
     }

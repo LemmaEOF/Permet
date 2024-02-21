@@ -9,11 +9,10 @@ import kishar.runes.relics.effect.EffectForge;
 import kishar.runes.relics.effect.EffectProperty;
 import kishar.runes.relics.effect.example.CarvingEffect;
 import kishar.runes.relics.effect.example.FlameEffect;
-import kishar.runes.relics.magic.F;
 import kishar.runes.relics.proto.Relic;
 import kishar.runes.relics.proto.RelicForge;
 import kishar.runes.relics.proto.base.MiningToolRelic;
-import kishar.runes.relics.proto.core.ItemRelicCore;
+import kishar.runes.relics.proto.base.SwordRelic;
 import kishar.runes.relics.proto.core.RelicCore;
 import kishar.runes.relics.proto.core.ToolRelicCore;
 import kishar.runes.relics.trigger.Trigger;
@@ -23,6 +22,8 @@ import net.minecraft.resource.featuretoggle.FeatureFlag;
 import net.minecraft.util.UseAction;
 
 public class RelicExample {
+    // public interface RelicSpell extends Function<RelicForge<?>, RelicForge<?>> {}
+
     public static Item[] test(BiFunction<String, Item, Item> regFunc) {
         /*
         * we use the builder pattern for more traditional object
@@ -33,7 +34,7 @@ public class RelicExample {
 
         // First, let's decide on some basic attributes to define an "axe."
         // When we know what type we're modifying, builder grammar becomes available.
-        Function<MiningToolRelic.Core, MiningToolRelic.Core> axeAttribues = core -> core
+        Supplier<MiningToolRelic.Core> axeAttributes = () -> new MiningToolRelic.Core()
             .attackSpeed(-3)
             .attackDamage(5);
 
@@ -48,35 +49,29 @@ public class RelicExample {
         Supplier<EffectForge> burnGuysStronger = () -> enhanceEffect.apply(burnGuysEffect.get());
 
         // We can also determine upgrade attributes without considering the actual item we're upgrading
-
-        final class upgrades {
-            public static <A extends Relic, B extends RelicCore<B>, T extends RelicForge<A, B, T>> T t2Upgrade(T r) { return r.effect(burnGuysEffect); }
-
-            Supplier<RelicForge<MiningToolRelic, MiningToolRelic.Core, ?>> base = () -> RelicForge.tool().core(axeAttribues);
-        }
-        // var t2Upgrade = F.<RelicForge<?, ?, ?>>save(r -> r.effect(burnGuysEffect));
+        Function<RelicForge, RelicForge> t2Upgrade = r -> r.effect(burnGuysEffect);
         var t3Upgrade = t2Upgrade.andThen(
             r -> r.core(c -> c.aspect(ToolRelicCore.MATERIAL, ToolMaterials.NETHERITE))
         );
-        var t3Sidegrade = F.<RelicForge<?, ?, ?>>save(t2Upgrade.andThen(r -> r.effect(burnGuysStronger)));
+        var t3Sidegrade = t2Upgrade.andThen(r -> r.effect(burnGuysStronger));
 
         // Finally, we apply all spells to create the upgrade tree.
         // There's a number of ways to do this, depending on what you think is pretty.
         
-        
-        MiningToolRelic baseAxe = base.get().forge();
+        Supplier<RelicForge> base = () -> new RelicForge(MiningToolRelic::new, axeAttributes);
+        Relic baseAxe = base.get().forge();
 
-        RelicForge<MiningToolRelic, MiningToolRelic.Core, ?> swagAxeT2F = upgrades.t2Upgrade(base.get());
-        MiningToolRelic swagAxeT2 = swagAxeT2F.forge();
+        Supplier<RelicForge> swagAxeT2F = () -> base.get().cast(t2Upgrade);
+        Relic swagAxeT2 = swagAxeT2F.get().forge();
 
-        MiningToolRelic swagAxeT3 = base.get().cast(c -> c).forge();
-        MiningToolRelic magicAxeT3 = swagAxeT2F.forge(t3Sidegrade);
+        Relic swagAxeT3 = swagAxeT2F.get().cast(t3Upgrade).forge();
+        Relic magicAxeT3 = swagAxeT2F.get().forge(t3Sidegrade);
 
         // then register all of them etc
-        var SWAG = regFunc.apply("swag_axe", baseAxe);
-        var SWAG2 = regFunc.apply("swag_axe_t2", swagAxeT2);
-        var SWAG3 = regFunc.apply("swag_axe_t3", swagAxeT3);
-        var MAGIC_SWAG = regFunc.apply("volcano_axe_t3", magicAxeT3);
+        var SWAG = regFunc.apply("swag_axe", baseAxe.asItem());
+        var SWAG2 = regFunc.apply("swag_axe_t2", swagAxeT2.asItem());
+        var SWAG3 = regFunc.apply("swag_axe_t3", swagAxeT3.asItem());
+        var MAGIC_SWAG = regFunc.apply("volcano_axe_t3", magicAxeT3.asItem());
 
         return new Item[]{SWAG, SWAG2, SWAG3, MAGIC_SWAG};
     }
@@ -94,16 +89,18 @@ public class RelicExample {
             .trigger(Trigger.USE_STOP)
             .trigger(Trigger.USE_FINISH);
 
-        MiningToolRelic bigKnife = new RelicForge()
+        Supplier<RelicCore<?>> bigKnifeCore = () -> new SwordRelic.Core()
             .attackDamage(3)
             .attackSpeed(-2.4f)
+            .maxUseTime(60)
+            .useAction(UseAction.BRUSH)
+            .material(PermetToolMaterial.PERMET);
+
+        var bigKnife = RelicForge.sword().baseCore(bigKnifeCore)
+            .settings(() -> flagged.apply(new Item.Settings(), PermetFlags.PERFECTED))
             .effect(carvingModifier.forge())
-            .maxUseTime((r, i) -> 60)
-            .useAction((r, i) -> UseAction.BRUSH)
-            .material(PermetToolMaterial.PERMET)
-            .settings(flagged.apply(new Item.Settings(), PermetFlags.PERFECTED))
             .forge();
 
-        return regFunc.apply("relic_knife", bigKnife);
+        return regFunc.apply("relic_knife", bigKnife.asItem());
     }
 }
