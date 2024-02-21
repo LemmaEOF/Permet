@@ -1,4 +1,4 @@
-package kishar.runes.relics.proto;
+package kishar.runes.relics.proto.core;
 
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
@@ -13,7 +13,19 @@ public class RelicToolMaterial implements ToolMaterial {
 	private final int enchantability;
 	private final Supplier<Ingredient> repairIngredient;
 
-	RelicToolMaterial(int durability, float miningSpeedMultiplier, float attackDamage,
+	public static RelicToolMaterial of(RelicCore<?> core) {
+		var mat = core.getAspect(ToolRelicCore.MATERIAL);
+		return new RelicToolMaterial(
+			mat.getDurability() + core.getAspect(ItemRelicCore.DURABILITY),
+			mat.getMiningSpeedMultiplier() + core.getAspect(ToolRelicCore.MINING_SPEED_MULTIPLIER),
+			mat.getAttackDamage(),
+			mat.getMiningLevel() + core.getAspect(ToolRelicCore.MINING_LEVEL),
+			mat.getEnchantability() + core.getAspect(ItemRelicCore.ENCHANTABILITY),
+			core.getAspect(ItemRelicCore.REPAIR_INGREDIENT, () -> mat.getRepairIngredient())
+		);
+	}
+
+	public RelicToolMaterial(int durability, float miningSpeedMultiplier, float attackDamage,
 							   int miningLevel, int enchantability, Supplier<Ingredient> repairIngredient) {
 		this.durability = durability;
 		this.miningSpeedMultiplier = miningSpeedMultiplier;

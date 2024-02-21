@@ -9,8 +9,13 @@ import kishar.runes.relics.effect.EffectForge;
 import kishar.runes.relics.effect.EffectProperty;
 import kishar.runes.relics.effect.example.CarvingEffect;
 import kishar.runes.relics.effect.example.FlameEffect;
+import kishar.runes.relics.magic.F;
 import kishar.runes.relics.proto.Relic;
 import kishar.runes.relics.proto.RelicForge;
+import kishar.runes.relics.proto.base.MiningToolRelic;
+import kishar.runes.relics.proto.core.ItemRelicCore;
+import kishar.runes.relics.proto.core.RelicCore;
+import kishar.runes.relics.proto.core.ToolRelicCore;
 import kishar.runes.relics.trigger.Trigger;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterials;
@@ -27,12 +32,12 @@ public class RelicExample {
         // let's experiment with a magic axe upgrade tree
 
         // First, let's decide on some basic attributes to define an "axe."
-        Function<RelicForge, RelicForge> axeAttribues = r -> r
+        // When we know what type we're modifying, builder grammar becomes available.
+        Function<MiningToolRelic.Core, MiningToolRelic.Core> axeAttribues = core -> core
             .attackSpeed(-3)
             .attackDamage(5);
 
-        // We also want some fun magic effects. This one should set
-        // an enemy on fire on hit.
+        // We also want some fun magic effects. This one should set an enemy on fire on hit.
         Supplier<EffectForge> burnGuysEffect = () -> new EffectForge(FlameEffect::new);
         
         // We can make a stronger version of the effect by modifying its properties.
@@ -43,19 +48,29 @@ public class RelicExample {
         Supplier<EffectForge> burnGuysStronger = () -> enhanceEffect.apply(burnGuysEffect.get());
 
         // We can also determine upgrade attributes without considering the actual item we're upgrading
-        Function<RelicForge, RelicForge> t2Upgrade = r -> r.effect(burnGuysEffect);
-        Function<RelicForge, RelicForge> t3Upgrade = t2Upgrade.andThen(r -> r.material(ToolMaterials.NETHERITE));
-        Function<RelicForge, RelicForge> t3Sidegrade = t2Upgrade.andThen(r -> r.effect(burnGuysStronger));
+
+        final class upgrades {
+            public static <A extends Relic, B extends RelicCore<B>, T extends RelicForge<A, B, T>> T t2Upgrade(T r) { return r.effect(burnGuysEffect); }
+
+            Supplier<RelicForge<MiningToolRelic, MiningToolRelic.Core, ?>> base = () -> RelicForge.tool().core(axeAttribues);
+        }
+        // var t2Upgrade = F.<RelicForge<?, ?, ?>>save(r -> r.effect(burnGuysEffect));
+        var t3Upgrade = t2Upgrade.andThen(
+            r -> r.core(c -> c.aspect(ToolRelicCore.MATERIAL, ToolMaterials.NETHERITE))
+        );
+        var t3Sidegrade = F.<RelicForge<?, ?, ?>>save(t2Upgrade.andThen(r -> r.effect(burnGuysStronger)));
 
         // Finally, we apply all spells to create the upgrade tree.
         // There's a number of ways to do this, depending on what you think is pretty.
-        Relic baseAxe = new RelicForge().cast(axeAttribues).forge();
+        
+        
+        MiningToolRelic baseAxe = base.get().forge();
 
-        RelicForge swagAxeT2F = new RelicForge().cast(axeAttribues).cast(t2Upgrade);
-        Relic swagAxeT2 = swagAxeT2F.forge();
+        RelicForge<MiningToolRelic, MiningToolRelic.Core, ?> swagAxeT2F = upgrades.t2Upgrade(base.get());
+        MiningToolRelic swagAxeT2 = swagAxeT2F.forge();
 
-        Relic swagAxeT3 = new RelicForge().cast(axeAttribues.compose(t3Upgrade)).forge();
-        Relic magicAxeT3 = swagAxeT2F.forge(t3Sidegrade);
+        MiningToolRelic swagAxeT3 = base.get().cast(c -> c).forge();
+        MiningToolRelic magicAxeT3 = swagAxeT2F.forge(t3Sidegrade);
 
         // then register all of them etc
         var SWAG = regFunc.apply("swag_axe", baseAxe);
@@ -79,7 +94,7 @@ public class RelicExample {
             .trigger(Trigger.USE_STOP)
             .trigger(Trigger.USE_FINISH);
 
-        Relic bigKnife = new RelicForge()
+        MiningToolRelic bigKnife = new RelicForge()
             .attackDamage(3)
             .attackSpeed(-2.4f)
             .effect(carvingModifier.forge())

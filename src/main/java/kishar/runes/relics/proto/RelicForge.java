@@ -2,130 +2,77 @@ package kishar.runes.relics.proto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.mojang.datafixers.util.Function5;
+import com.mojang.datafixers.util.Function3;
 
 import kishar.runes.relics.effect.Effect;
 import kishar.runes.relics.effect.EffectForge;
-import kishar.runes.relics.magic.F;
 import kishar.runes.relics.magic.Forge;
-import net.minecraft.block.Block;
+import kishar.runes.relics.proto.base.BowRelic;
+import kishar.runes.relics.proto.base.SwordRelic;
+import kishar.runes.relics.proto.base.MiningToolRelic;
+import kishar.runes.relics.proto.core.RelicCore;
+import kishar.runes.relics.proto.core.RelicCoreBase;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.UseAction;
 
-public final class RelicForge extends Forge<Relic, RelicForge> {
+public class RelicForge<T extends Relic, C extends RelicCore<C>, R extends RelicForge<T, C, R>> extends Forge<T, R> {
     // cooler name for RelicBuilder
     // accepts modifications, then builds a Relic Item
+    
+    protected final Function3<Item.Settings, ? super RelicCore<?>, List<Effect>, T> relicSource;
+    protected final Supplier<? extends C> coreSource;
 
-    private Function<Relic, Relic> modifiers = r -> r;
+    protected Supplier<Item.Settings> settings;
+    protected List<Effect> effects = new ArrayList<>();
+    protected Function<C, C> coreAugments = c -> c;
 
-    private float attackSpeed;
-    private float attackDamage;
-    private float miningSpeedMultiplier;
-    private int durability;
-    private int miningLevel;
-    private int enchantability;
-    private Supplier<Ingredient> repairIngredient;
-    TagKey<Block> effectiveBlocks = BlockTags.CANDLES; // idk
-    private ToolMaterial material = null; //new RelicToolMaterial(0, 0, 0, 0, 0, Ingredient::empty);
+    public RelicForge(final Function3<Item.Settings, ? super RelicCore<?>, List<Effect>, T> relicSource, final Supplier<? extends C> coreSource) {
+        this.relicSource = relicSource;
+        this.coreSource = coreSource;
+    }
 
-    private List<Effect> effects = new ArrayList<>();
-    private Item.Settings settings;
+    public static <T extends Relic, C extends RelicCore<?>> RelicForge<T, RelicCoreBase.BasicCore, ?> of(Function3<Item.Settings, ? super RelicCore<?>, List<Effect>, T> relicSource) {
+        return new RelicForge<>(relicSource, RelicCoreBase.BasicCore::new);
+    }
 
-    private Function5<Float, ToolMaterial, TagKey<Block>, Item.Settings, List<Effect>, Relic> makeFunc = Relic::new;
+    public static RelicForge<MiningToolRelic, MiningToolRelic.Core, ?> tool() {
+        return new RelicForge<>(MiningToolRelic::new, MiningToolRelic.Core::new);
+    }
 
-    public static RelicForge of(Function5<Float, ToolMaterial, TagKey<Block>, Item.Settings, List<Effect>, Relic> alternate) {
-        var forge = new RelicForge();
-        forge.makeFunc = alternate;
-        return forge;
+    public static RelicForge<SwordRelic, SwordRelic.Core, ?> sword() {
+        return new RelicForge<>(SwordRelic::new, SwordRelic.Core::new);
+    }
+
+    public static RelicForge<BowRelic, BowRelic.Core, ?> bow() {
+        return new RelicForge<>(BowRelic::new, BowRelic.Core::new);
     }
 
     @Override
-    public Relic forge(){
-        if (material == null) 
-            material = new RelicToolMaterial(0, 0, 0, 0, 0, Ingredient::empty);
-
-        if (repairIngredient == null)
-            repairIngredient = () -> material.getRepairIngredient();
-
-        material = new RelicToolMaterial(
-            durability + material.getDurability(),
-            miningSpeedMultiplier + material.getMiningSpeedMultiplier(),
-            attackDamage + material.getAttackDamage(), 
-            miningLevel + material.getMiningLevel(), 
-            enchantability + material.getMiningLevel(), 
-            repairIngredient
-        );
-
-        return modifiers.apply(
-            makeFunc.apply(attackSpeed, material, effectiveBlocks, settings == null ? new Item.Settings() : settings, effects)
+    public T forge(){
+        return relicSource.apply(
+            settings == null ? new Item.Settings() : settings.get(),
+            coreAugments.apply(coreSource.get()),
+            new ArrayList<>(effects)
         );
     };
-
-    public RelicForge material(ToolMaterial mat){
-        material = mat; return this;
+    
+    public R effect (Effect e){
+        effects.add(e); return self();
     }
 
-    public RelicForge attackSpeed (float v){
-        attackSpeed = v; return this;
-    }
-
-    public RelicForge attackDamage (float v){
-        attackDamage = v; return this;
-    }
-
-    public RelicForge miningSpeedMultiplier (float v){
-        miningSpeedMultiplier = v; return this;
-    }
-
-    public RelicForge durability (int v){
-        durability = v; return this;
-    }
-
-    public RelicForge miningLevel (int v){
-        miningLevel = v; return this;
-    }
-
-    public RelicForge enchantability (int v){
-        enchantability = v; return this;
-    }
-
-    public RelicForge repairIngredient (Supplier<Ingredient> v){
-        repairIngredient = v; return this;
-    }
-
-    public RelicForge effectiveBlocks (TagKey<Block> v){
-        effectiveBlocks = v; return this;
-    }
-
-    public RelicForge effect (Effect e){
-        effects.add(e); return this;
-    }
-
-    public RelicForge effect (Supplier<EffectForge> e){
+    public R effect (Supplier<EffectForge> e){
         return effect(e.get().forge());
     }
 
-    public RelicForge settings (Item.Settings v) {
-        settings = v; return this;
+    public R settings (Supplier<Item.Settings> v) {
+        settings = v; return self();
     }
 
-    // ill conceived ideas below ----------- wip, needs better design
-    public RelicForge maxUseTime(BiFunction<Relic, ItemStack, Integer> cb) {
-        modifiers = modifiers.compose(F.map(r -> r.setMaxUseTime(cb)));
-        return this;
+    public R core(Function<? super C, ? extends C> augment) {
+        coreAugments = coreAugments.andThen(augment);
+        return self();
     }
 
-    public RelicForge useAction(BiFunction<Relic, ItemStack, UseAction> cb) {
-        modifiers = modifiers.compose(F.map(r -> r.setUseAction(cb)));
-        return this;
-    }
 }
