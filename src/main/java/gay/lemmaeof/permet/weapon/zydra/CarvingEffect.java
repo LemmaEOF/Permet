@@ -2,7 +2,6 @@ package gay.lemmaeof.permet.weapon.zydra;
 
 import java.util.function.Predicate;
 
-import kishar.runes.relics.proto.base.BowRelic;
 import kishar.runes.relics.proto.core.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +11,7 @@ import gay.lemmaeof.permet.init.PermetDamageTypes;
 import gay.lemmaeof.permet.init.PermetItems;
 import gay.lemmaeof.permet.init.PermetTags;
 import kishar.runes.relics.effect.Effect;
+import kishar.runes.relics.effect.core.EffectCore;
 import kishar.runes.relics.trigger.Trigger;
 import kishar.runes.relics.trigger.TriggerContext;
 import net.minecraft.entity.Entity;
@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 
 public class CarvingEffect extends Effect {
 
-	public static final class Core extends RelicCoreBase<Core> implements EffectRelicCore<Core> {}
+	public static final class Core extends RelicCoreBase<Core> implements EffectCore<Core> {}
 
 	public CarvingEffect(Multimap<Trigger, Predicate<TriggerContext<?>>> triggers,
 						 RelicCore<?> core) {

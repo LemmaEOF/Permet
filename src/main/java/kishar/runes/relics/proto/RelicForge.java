@@ -2,7 +2,6 @@ package kishar.runes.relics.proto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Function3;

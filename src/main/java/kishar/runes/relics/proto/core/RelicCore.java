@@ -2,7 +2,6 @@ package kishar.runes.relics.proto.core;
 
 import kishar.runes.relics.magic.SelfReferential;
 
-//TODO: do we ned subtypes? We could just have builders or something...
 public interface RelicCore<R extends RelicCore<R>> extends SelfReferential<R> {
     
     class Aspect<T> {

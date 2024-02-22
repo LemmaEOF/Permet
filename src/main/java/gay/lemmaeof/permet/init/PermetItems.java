@@ -10,7 +10,6 @@ import gay.lemmaeof.permet.weapon.star.MagitekBowItem;
 import gay.lemmaeof.permet.weapon.zydra.BigKnife;
 import kishar.runes.relics.effect.Effect;
 import kishar.runes.relics.proto.RelicForge;
-import kishar.runes.relics.proto.core.RelicCore;
 import kishar.runes.relics.proto.core.ToolRelicCore;
 import kishar.runes.relics.proto.core.RelicCore.Aspect;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;

@@ -20,9 +20,6 @@ public abstract class Effect {
 
     public abstract void apply(TriggerContext<?> ctx);
 
-    // the argument will guarantee the type!! I hope!!!
-    // vanilla does this!
-    @SuppressWarnings("unchecked")
     public <T> T aspect(RelicCore.Aspect<T> aspect) {
         return core.getAspect(aspect);
     }

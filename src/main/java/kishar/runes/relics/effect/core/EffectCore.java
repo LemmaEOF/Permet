@@ -1,6 +1,8 @@
-package kishar.runes.relics.proto.core;
+package kishar.runes.relics.effect.core;
 
-public interface EffectRelicCore<R extends EffectRelicCore<R>> extends RelicCore<R> {
+import kishar.runes.relics.proto.core.RelicCore;
+
+public interface EffectCore<R extends EffectCore<R>> extends RelicCore<R> {
     Aspect<Integer> DURATION = new Aspect<>(1);
     Aspect<Float> INTENSITY = new Aspect<>(1f);
 
