@@ -77,7 +77,7 @@ public class PermetItems {
 
 		public static void build(String baseName, String finalName, Supplier<RelicForge> base, Supplier<Effect> t2Effect, Supplier<Effect> t4Effect) {
 			register("vanadic_"+baseName, make(base, 1, r -> r.cast(diamond)));
-			register(base+"_t2", make(base, 2, PermetFlags.PHASE_2, r -> r.cast(diamond).effect(t2Effect.get())));
+			register(baseName+"_t2", make(base, 2, PermetFlags.PHASE_2, r -> r.cast(diamond).effect(t2Effect.get())));
 			register("symbionic_"+baseName, make(base, 3, PermetFlags.SYMBIONIC, r -> r.cast(netherite).effect(t2Effect.get())));
 			if (t4Effect == null) { // no new effect, effect will use shell level to determine result
 				register(finalName, make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite)));
