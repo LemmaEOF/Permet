@@ -1,5 +1,6 @@
 package kishar.runes.relics.proto.base;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.HashMultimap;
@@ -15,6 +16,7 @@ import kishar.runes.relics.proto.core.ToolRelicCore;
 import kishar.runes.relics.trigger.Trigger;
 import kishar.runes.relics.trigger.TriggerContext;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,12 +58,8 @@ public class MiningToolRelic extends MiningToolItem implements Relic {
     }
 
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
+        if (state.isOf(Blocks.COBWEB)) return 15f; // fuck spiders
         return isSuitableFor(state) ? this.miningSpeed : 1.0F;
-    }
-
-    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        stack.damage(1, attacker, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND) );
-        return true;
     }
 
     // optional overrides for the most salient methods of Item
@@ -77,7 +75,9 @@ public class MiningToolRelic extends MiningToolItem implements Relic {
 
     // events
     public <R, T extends TriggerContext<R>> R trigger(T ctx){
-        effects.get(ctx.trigger).forEach(e -> e.apply(ctx));
+        for (Effect e : effects.get(ctx.trigger)) {
+            e.apply(ctx);
+        }
         return ctx.getResult();
     }
 
@@ -111,6 +111,13 @@ public class MiningToolRelic extends MiningToolItem implements Relic {
     public ActionResult useOnBlock(ItemUsageContext context) {
         return trigger(new TriggerContext.OnBlock(this, context.getStack(), context.getWorld(), context.getPlayer(), context),
             () -> super.useOnBlock(context));
+    }
+
+    @Override
+    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        stack.damage(1, attacker, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND) );
+        return trigger(new TriggerContext.Hit(this, stack, attacker.getWorld(), attacker, target), 
+            () -> true);
     }
 
 }

@@ -35,8 +35,6 @@ import net.minecraft.world.World;
 
 public class CarvingEffect extends Effect {
 
-	public static final class Core extends RelicCoreBase<Core> implements EffectCore<Core> {}
-
 	public CarvingEffect(Multimap<Trigger, Predicate<TriggerContext<?>>> triggers,
 						 RelicCore<?> core) {
         super(triggers, core);

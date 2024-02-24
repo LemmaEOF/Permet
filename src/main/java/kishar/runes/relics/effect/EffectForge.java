@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import kishar.runes.relics.magic.Forge;
 import kishar.runes.relics.proto.core.RelicCore;
+import kishar.runes.relics.proto.core.RelicCoreBase;
 import kishar.runes.relics.trigger.Trigger;
 import kishar.runes.relics.trigger.TriggerContext;
 
@@ -26,6 +27,11 @@ public class EffectForge extends Forge<Effect, EffectForge> {
     public EffectForge(EffectFactory factory, RelicCore<?> core) {
         this.factory = factory;
         this.core = core;
+    }
+
+    public EffectForge(EffectFactory factory) {
+        this.factory = factory;
+        this.core = new RelicCoreBase<>();
     }
 
     public EffectForge trigger(Trigger trig) {

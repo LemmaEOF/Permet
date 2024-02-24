@@ -63,7 +63,9 @@ public class SwordRelic extends SwordItem implements Relic {
 
     // events
     public <R, T extends TriggerContext<R>> R trigger(T ctx){
-        effects.get(ctx.trigger).forEach(e -> e.apply(ctx));
+        for (Effect e : effects.get(ctx.trigger)) {
+            e.apply(ctx);
+        }
         return ctx.getResult();
     }
 
@@ -96,6 +98,12 @@ public class SwordRelic extends SwordItem implements Relic {
     public ActionResult useOnBlock(ItemUsageContext context) {
         return trigger(new TriggerContext.OnBlock(this, context.getStack(), context.getWorld(), context.getPlayer(), context),
             () -> super.useOnBlock(context));
+    }
+
+    @Override
+    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        return trigger(new TriggerContext.Hit(this, stack, attacker.getWorld(), attacker, target), 
+            () -> super.postHit(stack, target, attacker));
     }
     
 }

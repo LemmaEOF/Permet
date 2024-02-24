@@ -79,4 +79,13 @@ burn
             this.remainingUseTicks = remainingUseTicks;
         }
     }
+
+    public static final class Hit extends TriggerContext<Boolean> {
+        public final LivingEntity target;
+        public Hit(Relic relic, ItemStack stack, World world, LivingEntity user, LivingEntity target) {
+            super(relic, Trigger.HIT, stack, world, user);
+            // TODO: target logic, class very subject to change
+            this.target = target;
+        }
+    }
 }

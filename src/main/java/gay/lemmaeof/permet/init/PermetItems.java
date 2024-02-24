@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import gay.lemmaeof.permet.Permet;
 import gay.lemmaeof.permet.util.PermetToolMaterial;
-import gay.lemmaeof.permet.weapon.cardbox.OlReliableItem;
+import gay.lemmaeof.permet.weapon.cardbox.OlReliable;
 import gay.lemmaeof.permet.weapon.star.MagitekBowItem;
 import gay.lemmaeof.permet.weapon.zydra.BigKnife;
 import kishar.runes.relics.effect.Effect;
@@ -24,6 +24,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class PermetItems {
+
+	public static final Aspect<Integer> SHELL_TIER = new Aspect<>(0);
+	
 	public static final Item PERMET = register("permet", new Item(new Item.Settings()));
 	public static final Item EMPTY_SHELL_UNIT = register("empty_shell_unit", new Item(new Item.Settings()));
 	public static final Item VANADIC_SHELL_UNIT = register("vanadic_shell_unit", new Item(new Item.Settings()));
@@ -31,13 +34,11 @@ public class PermetItems {
 	public static final Item SYMBIONIC_SHELL_UNIT = register("symbionic_shell_unit", new Item(flagged(new Item.Settings(), PermetFlags.SYMBIONIC)));
 	public static final Item PERFECTED_SHELL_UNIT = register("perfected_shell_unit", new Item(flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 	public static final Item MAGITEK_BOW = register("magitek_bow", new MagitekBowItem(flagged(new Item.Settings(), PermetFlags.PERFECTED)));
-	public static final Item OL_RELIABLE = register("ol_reliable", new OlReliableItem(PermetToolMaterial.PERMET, 3, -4, flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 
 	static {
-		Foundry.build("dagger", "big_knife", BigKnife.base, BigKnife.carvingModifier::forge);
+		Foundry.build("dagger", "big_knife", BigKnife.base, BigKnife.carvingModifier.forge());
+		Foundry.build("hammer", "ol_reliable", OlReliable.base, OlReliable.homeRunModifier.forge());
 	}
-
-	public static final Aspect<Integer> SHELL_TIER = new Aspect<>(1);
 
 	public static final ItemGroup PERMET_GROUP = Registry.register(Registries.ITEM_GROUP, new Identifier(Permet.MODID, "permet"),
 			FabricItemGroup.builder()
@@ -51,42 +52,41 @@ public class PermetItems {
 						entries.add(SYMBIONIC_SHELL_UNIT);
 						entries.add(PERFECTED_SHELL_UNIT);
 						entries.add(MAGITEK_BOW);
-						entries.add(OL_RELIABLE);
 						
 					}))
 					.build()
 	);
 
 	private static class Foundry {
-		// you get the idea.
-		private static Function<RelicForge, RelicForge> setShell(int v) {
-			return r -> r.aspect(SHELL_TIER, v);
+
+		private static Item make (Supplier<RelicForge> s, int tier, FeatureFlag flags, Function<RelicForge, RelicForge> f) {
+			return f.apply(s.get())
+			.aspect(SHELL_TIER, tier)
+			.settings(flagged(new Item.Settings(), flags)).forge().asItem();
 		}
 
-		private static Item make (Supplier<RelicForge> s, int t, FeatureFlag flags, Function<RelicForge, RelicForge> f) {
-			return f.apply(s.get()).cast(setShell(t)).settings(flagged(new Item.Settings(), flags)).forge().asItem();
-		}
-
-		private static Item make (Supplier<RelicForge> s, int t, Function<RelicForge, RelicForge> f) {
-			return f.apply(s.get()).cast(setShell(t)).settings(new Item.Settings()).forge().asItem();
+		private static Item make (Supplier<RelicForge> s, int tier, Function<RelicForge, RelicForge> f) {
+			return f.apply(s.get())
+			.aspect(SHELL_TIER, tier)
+			.settings(new Item.Settings()).forge().asItem();
 		}
 
 		private static Function<RelicForge, RelicForge> diamond = r -> r.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_DIAMOND);
 
 		private static Function<RelicForge, RelicForge> netherite = r -> r.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_NETHERITE);
 
-		public static void build(String baseName, String finalName, Supplier<RelicForge> base, Supplier<Effect> t2Effect, Supplier<Effect> t4Effect) {
+		public static void build(String baseName, String finalName, Supplier<RelicForge> base, Effect t2Effect, Effect t4Effect) {
 			register("vanadic_"+baseName, make(base, 1, r -> r.cast(diamond)));
-			register(baseName+"_t2", make(base, 2, PermetFlags.PHASE_2, r -> r.cast(diamond).effect(t2Effect.get())));
-			register("symbionic_"+baseName, make(base, 3, PermetFlags.SYMBIONIC, r -> r.cast(netherite).effect(t2Effect.get())));
+			register(baseName+"_t2", make(base, 2, PermetFlags.PHASE_2, r -> r.cast(diamond).effect(t2Effect)));
+			register("symbionic_"+baseName, make(base, 3, PermetFlags.SYMBIONIC, r -> r.cast(netherite).effect(t2Effect)));
 			if (t4Effect == null) { // no new effect, effect will use shell level to determine result
-				register(finalName, make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite)));
+				register(finalName, make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite).effect(t2Effect)));
 			} else {
-				register(finalName, make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite).effect(t4Effect.get())));
+				register(finalName, make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite).effect(t4Effect)));
 			}
 		}
 
-		public static void build(String baseName, String finalName, Supplier<RelicForge> base, Supplier<Effect> t2Effect) {
+		public static void build(String baseName, String finalName, Supplier<RelicForge> base, Effect t2Effect) {
 			build(baseName, finalName, base, t2Effect, null);
 		}
 

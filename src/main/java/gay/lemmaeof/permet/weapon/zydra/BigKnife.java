@@ -10,7 +10,7 @@ import kishar.runes.relics.trigger.Trigger;
 import net.minecraft.util.UseAction;
 
 public class BigKnife {
-        public static final EffectForge carvingModifier = new EffectForge(CarvingEffect::new, new CarvingEffect.Core())
+        public static final EffectForge carvingModifier = new EffectForge(CarvingEffect::new)
             // Carving effect requires all these triggers to function
             .trigger(Trigger.USE_ENTITY)
             .trigger(Trigger.USE_TICK)
