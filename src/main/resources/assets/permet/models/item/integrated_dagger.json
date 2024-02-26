@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "minecraft:item/handheld",
 	"textures": {
-		"layer0": "permet:item/dagger_t2"
+		"layer0": "permet:item/integrated_dagger"
 	},
 	"display": {
 		"thirdperson_righthand": {

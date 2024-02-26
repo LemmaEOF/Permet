@@ -18,10 +18,28 @@ repositories {
 	// for more information about repositories.
 
 	maven {
-		url 'https://repo.sleeping.town'
+		url 'https://repo.sleeping.town' //lib39 and featureful
 		content {
 			includeGroup 'com.unascribed'
 			includeGroup 'gay.lemmaeof'
+		}
+	}
+	maven {
+		url 'https://api.modrinth.com/maven' //better combat
+		content {
+			includeGroup 'maven.modrinth'
+		}
+	}
+	maven {
+		url 'https://maven.kosmx.dev/' //playeranimator for better combat (*sigh*)
+		content {
+			includeGroup 'dev.kosmx.player-anim'
+		}
+	}
+	maven {
+		url "https://maven.shedaniel.me" //clothconfig for better combat (this is legally considered violence)
+		content {
+			includeGroup 'me.shedaniel.cloth'
 		}
 	}
 }
@@ -44,10 +62,16 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation include("com.unascribed:lib39-core:${project.lib39_version}")
-	modImplementation include("com.unascribed:lib39-lockpick:${project.lib39_version}")
-	modImplementation include("com.unascribed:lib39-machination:${project.lib39_version}")
+	modImplementation include("com.unascribed:lib39-core:${project.lib39_version}+${project.minecraft_version}")
+	modImplementation include("com.unascribed:lib39-lockpick:${project.lib39_version}+${project.minecraft_version}")
+	modImplementation include("com.unascribed:lib39-machination:${project.lib39_version}+${project.minecraft_version}")
 	modImplementation include("gay.lemmaeof:Featureful:${project.featureful_version}")
+	modImplementation "maven.modrinth:better-combat:${project.bettercombat_version}+${project.minecraft_version}-fabric"
+
+	//bettercombat dependencies because bettercombat doesn't have a real maven
+	modRuntimeOnly 'dev.kosmx.player-anim:player-animation-lib-fabric:1.0.2+1.19.4'
+	//this is committing violence against me personally
+	modRuntimeOnly 'me.shedaniel.cloth:cloth-config-fabric:11.1.106'
 }
 
 processResources {

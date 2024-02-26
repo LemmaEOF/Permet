@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": { "item": "permet:permet_smithing_template" },
+  "base": { "item": "permet:empty_shell_unit" },
+  "addition": { "item": "permet:permet" },
+  "result": { "item": "permet:vanadic_shell_unit" }
+}

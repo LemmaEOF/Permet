@@ -1,6 +1,7 @@
 package gay.lemmaeof.permet;
 
 import gay.lemmaeof.permet.init.PermetDamageTypes;
+import gay.lemmaeof.permet.init.PermetFlags;
 import gay.lemmaeof.permet.init.PermetItems;
 import gay.lemmaeof.permet.init.PermetTags;
 import net.fabricmc.api.ModInitializer;

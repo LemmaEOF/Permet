@@ -31,8 +31,8 @@
 		"fabric-api": "*"
 	},
 	"custom": {
-		"featureful:features": [
-			"",
+		"featureful:flags": [
+			"integrated",
 			"symbionic",
 			"perfected"
 		]

@@ -17,6 +17,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SmithingTemplateItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
@@ -30,10 +31,11 @@ public class PermetItems {
 	public static final Item PERMET = register("permet", new Item(new Item.Settings()));
 	public static final Item EMPTY_SHELL_UNIT = register("empty_shell_unit", new Item(new Item.Settings()));
 	public static final Item VANADIC_SHELL_UNIT = register("vanadic_shell_unit", new Item(new Item.Settings()));
-	public static final Item BLUE_SHELL_UNIT = register("blue_shell_unit", new Item(flagged(new Item.Settings(), PermetFlags.PHASE_2)));
+	public static final Item INTEGRATED_SHELL_UNIT = register("integrated_shell_unit", new Item(flagged(new Item.Settings(), PermetFlags.INTEGRATED)));
 	public static final Item SYMBIONIC_SHELL_UNIT = register("symbionic_shell_unit", new Item(flagged(new Item.Settings(), PermetFlags.SYMBIONIC)));
 	public static final Item PERFECTED_SHELL_UNIT = register("perfected_shell_unit", new Item(flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 	public static final Item MAGITEK_BOW = register("magitek_bow", new MagitekBowItem(flagged(new Item.Settings(), PermetFlags.PERFECTED)));
+	public static final Item PERMET_SMITHING_TEMPLATE = register("permet_smithing_template", new Item(new Item.Settings())); //TODO: smithing template item tooltip hell
 
 	static {
 		Foundry.build("dagger", "big_knife", BigKnife.base, BigKnife.carvingModifier.forge());
@@ -47,12 +49,12 @@ public class PermetItems {
 					.entries(((displayContext, entries) -> {
 						entries.add(PERMET);
 						entries.add(EMPTY_SHELL_UNIT);
+						entries.add(PERMET_SMITHING_TEMPLATE);
 						entries.add(VANADIC_SHELL_UNIT);
-						entries.add(BLUE_SHELL_UNIT);
+						entries.add(INTEGRATED_SHELL_UNIT);
 						entries.add(SYMBIONIC_SHELL_UNIT);
 						entries.add(PERFECTED_SHELL_UNIT);
 						entries.add(MAGITEK_BOW);
-						
 					}))
 					.build()
 	);
@@ -75,9 +77,10 @@ public class PermetItems {
 
 		private static Function<RelicForge, RelicForge> netherite = r -> r.aspect(ToolRelicCore.MATERIAL, PermetToolMaterial.PERMET_NETHERITE);
 
+		//TODO: we need a way to get these into fields/item groups
 		public static void build(String baseName, String finalName, Supplier<RelicForge> base, Effect t2Effect, Effect t4Effect) {
 			register("vanadic_"+baseName, make(base, 1, r -> r.cast(diamond)));
-			register(baseName+"_t2", make(base, 2, PermetFlags.PHASE_2, r -> r.cast(diamond).effect(t2Effect)));
+			register("integrated_"+baseName, make(base, 2, PermetFlags.INTEGRATED, r -> r.cast(diamond).effect(t2Effect)));
 			register("symbionic_"+baseName, make(base, 3, PermetFlags.SYMBIONIC, r -> r.cast(netherite).effect(t2Effect)));
 			if (t4Effect == null) { // no new effect, effect will use shell level to determine result
 				register(finalName, make(base, 4, PermetFlags.PERFECTED, r -> r.cast(netherite).effect(t2Effect)));

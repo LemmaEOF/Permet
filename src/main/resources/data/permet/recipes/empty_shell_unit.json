@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+	" g ",
+	"g g",
+	"bbb"
+  ],
+  "key": {
+	"g": {
+	  "tag": "c:glass_blocks"
+	},
+	"b": {
+	  "item": "minecraft:blackstone"
+	}
+  },
+  "result": {
+	"item": "permet:empty_shell_unit"
+  }
+}
