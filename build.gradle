@@ -65,6 +65,7 @@ dependencies {
 	modImplementation include("com.unascribed:lib39-core:${project.lib39_version}+${project.minecraft_version}")
 	modImplementation include("com.unascribed:lib39-lockpick:${project.lib39_version}+${project.minecraft_version}")
 	modImplementation include("com.unascribed:lib39-machination:${project.lib39_version}+${project.minecraft_version}")
+	modImplementation include("com.unascribed:lib39-recoil:${project.lib39_version}+${project.minecraft_version}")
 	modImplementation include("gay.lemmaeof:Featureful:${project.featureful_version}")
 	modImplementation "maven.modrinth:better-combat:${project.bettercombat_version}+${project.minecraft_version}-fabric"
 

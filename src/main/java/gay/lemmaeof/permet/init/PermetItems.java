@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import gay.lemmaeof.permet.Permet;
 import gay.lemmaeof.permet.util.PermetToolMaterial;
 import gay.lemmaeof.permet.weapon.cardbox.OlReliable;
+import gay.lemmaeof.permet.weapon.lemma.AxiomataRelic;
 import gay.lemmaeof.permet.weapon.star.MagitekBowItem;
 import gay.lemmaeof.permet.weapon.zydra.BigKnife;
 import kishar.runes.relics.effect.Effect;
@@ -36,6 +37,7 @@ public class PermetItems {
 	public static final Item PERFECTED_SHELL_UNIT = register("perfected_shell_unit", new Item(flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 	public static final Item MAGITEK_BOW = register("magitek_bow", new MagitekBowItem(flagged(new Item.Settings(), PermetFlags.PERFECTED)));
 	public static final Item PERMET_SMITHING_TEMPLATE = register("permet_smithing_template", new Item(new Item.Settings())); //TODO: smithing template item tooltip hell
+	public static final Item TEST_AIXIOMATA = register("test_axiomata", new AxiomataRelic(new Item.Settings().maxCount(1)));
 
 	static {
 		Foundry.build("dagger", "big_knife", BigKnife.base, BigKnife.carvingModifier.forge());
@@ -55,6 +57,7 @@ public class PermetItems {
 						entries.add(SYMBIONIC_SHELL_UNIT);
 						entries.add(PERFECTED_SHELL_UNIT);
 						entries.add(MAGITEK_BOW);
+						entries.add(TEST_AIXIOMATA);
 					}))
 					.build()
 	);
